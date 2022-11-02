@@ -1,10 +1,9 @@
 from base64 import urlsafe_b64encode
+from os import urandom
+
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives.hashes import SHA256
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from nanoid import generate
-from os import urandom
-
 from django.conf import settings
 from django.contrib.auth.hashers import check_password, make_password
 from django.core.exceptions import PermissionDenied
@@ -12,22 +11,23 @@ from django.core.mail import send_mail
 from django.db import models
 from django.shortcuts import reverse
 from django.utils.timezone import now, timedelta
+from nanoid import generate
 
 
 def get_expiration_time(days):
-    return now() + timedelta(days = days)
+    return now() + timedelta(days=days)
 
 
 def generate_slug():
-    return generate(size = 12)
+    return generate(size=12)
 
 
 def generate_key(password, salt):
     kdf = PBKDF2HMAC(
-        algorithm = SHA256(),
-        length = 32,
-        salt = bytes.fromhex(salt),
-        iterations = 390000,
+        algorithm=SHA256(),
+        length=32,
+        salt=bytes.fromhex(salt),
+        iterations=390000,
     )
     return urlsafe_b64encode(kdf.derive(password.encode()))
 
@@ -44,24 +44,24 @@ def decrypt_content(password, salt, content):
 
 class NotificationManager(models.Manager):
     def get_by_natural_key(self, main, fake, email):
-        return self.get(main = main, fake = fake, email = email)
+        return self.get(main=main, fake=fake, email=email)
 
 
 class Notification(models.Model):
-    main = models.BooleanField(default = False)
-    fake = models.BooleanField(default = False)
-    email = models.EmailField(max_length = 254, blank = True, null = True)
+    main = models.BooleanField(default=False)
+    fake = models.BooleanField(default=False)
+    email = models.EmailField(max_length=254, blank=True, null=True)
 
 
 class FakeNoteManager(models.Manager):
     def get_by_natural_key(self, content, password, salt):
-        return self.get(content = content, password = password, salt = salt)
+        return self.get(content=content, password=password, salt=salt)
 
 
 class FakeNote(models.Model):
-    content = models.TextField(blank = True)
-    password = models.CharField(max_length = 100, blank = True, null = True)
-    salt = models.CharField(max_length = 32, blank = True)
+    content = models.TextField(blank=True)
+    password = models.CharField(max_length=100, blank=True, null=True)
+    salt = models.CharField(max_length=32, blank=True)
 
     def prepare_content(self):
         self.password = make_password(str(self.password or ''), 'pbkdf2_sha256')
@@ -73,15 +73,15 @@ class OptionManager(models.Manager):
     def get_by_natural_key(self, type, auto_destruction, expiration_time, password,
                            salt, confirmation, notification, fake_note, falsification):
         return self.get(
-            type = type,
-            auto_destruction = auto_destruction,
-            expiration_time = expiration_time,
-            password = password,
-            salt = salt,
-            confirmation = confirmation,
-            notification = notification,
-            fake_note = fake_note,
-            falsification = falsification,
+            type=type,
+            auto_destruction=auto_destruction,
+            expiration_time=expiration_time,
+            password=password,
+            salt=salt,
+            confirmation=confirmation,
+            notification=notification,
+            fake_note=fake_note,
+            falsification=falsification,
         )
 
     def get_or_create_notification(self, validated_data):
@@ -113,21 +113,21 @@ class Option(models.Model):
     ]
 
     expiration_time_choices = {
-         'AFTER_DAY': 1,
-         'AFTER_WEEK': 7,
-         'AFTER_MONTH': 30,
-         'DEFAULT': 365,
+        'AFTER_DAY': 1,
+        'AFTER_WEEK': 7,
+        'AFTER_MONTH': 30,
+        'DEFAULT': 365,
     }
 
-    type = models.CharField(max_length = 5, choices = type_choices, default = 'HTTPS')
-    auto_destruction = models.CharField(max_length = 11, choices = auto_destruction_choices, default = 'DEFAULT')
-    expiration_time = models.DateTimeField(blank = True, null = True)
-    password = models.CharField(max_length = 100, blank = True, null = True)
-    salt = models.CharField(max_length = 32, blank = True)
-    confirmation = models.IntegerField(default = 0)
-    notification = models.ForeignKey(Notification, on_delete = models.SET_NULL, null = True)
-    fake_note = models.ForeignKey(FakeNote, on_delete = models.SET_NULL, null = True)
-    falsification = models.BooleanField(default = True)
+    type = models.CharField(max_length=5, choices=type_choices, default='HTTPS')
+    auto_destruction = models.CharField(max_length=11, choices=auto_destruction_choices, default='DEFAULT')
+    expiration_time = models.DateTimeField(blank=True, null=True)
+    password = models.CharField(max_length=100, blank=True, null=True)
+    salt = models.CharField(max_length=32, blank=True)
+    confirmation = models.IntegerField(default=0)
+    notification = models.ForeignKey(Notification, on_delete=models.SET_NULL, null=True)
+    fake_note = models.ForeignKey(FakeNote, on_delete=models.SET_NULL, null=True)
+    falsification = models.BooleanField(default=True)
 
     objects = OptionManager()
 
@@ -160,14 +160,14 @@ class Note(models.Model):
         'READ_DESTROY': 'The {} note with ID ******{} was read and destroyed!',
     }
 
-    slug = models.SlugField(default = generate_slug, unique = True)
+    slug = models.SlugField(default=generate_slug, unique=True)
     content = models.TextField()
-    option = models.ForeignKey(Option, on_delete = models.SET_NULL, null = True)
+    option = models.ForeignKey(Option, on_delete=models.SET_NULL, null=True)
 
     objects = NoteManager()
 
     def get_absolute_url(self):
-        return reverse('note', kwargs = {'slug': self.slug})
+        return reverse('note', kwargs={'slug': self.slug})
 
     def prepare_content(self):
         self.option.prepare_content()
@@ -217,7 +217,7 @@ class Note(models.Model):
             message,
             settings.EMAIL_HOST_USER,
             [self.option.notification.email],
-            fail_silently = True,
+            fail_silently=True,
         )
 
     def save(self, *args, **kwargs):
@@ -227,4 +227,4 @@ class Note(models.Model):
 
 class Support(models.Model):
     problem = models.TextField()
-    email = models.EmailField(max_length = 254, blank = True, null = True)
+    email = models.EmailField(max_length=254, blank=True, null=True)
