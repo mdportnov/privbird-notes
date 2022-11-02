@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+    backend:
+        build: ./backend/
+        command: python ./backend/manage.py runserver 0.0.0.0:8000
+        ports:
+            - "8000:8000"
+        env_file:
+            - .env.dev
+        volumes:
+            - .:/app
+        depends_on:
+            - db
+    
+    celery:
+        build: ./backend/
+        command: celery -A onetimelinks worker -B -l INFO
+        env_file:
+            - .env.dev
+        volumes:
+            - .:/app
+        depends_on:
+            - backend
+    
+    frontend:
+        build: ./frontend/
+        ports:
+            - "8002:80"
+        volumes:
+            - .:/app
+        links:
+            - backend:backend
+    
+    db:
+        image: postgres:13
+        env_file:
+            - .env.dev
+        volumes:
+            - postgres_data:/var/lib/postgresql/data/
+    
+    redis:
+        image: redis:6-alpine
+
+volumes:
+    postgres_data:
