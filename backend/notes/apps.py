@@ -1,8 +1,8 @@
 from django.apps import AppConfig
 
 
-class SecnoteConfig(AppConfig):
-    name = 'secnote'
+class NotesConfig(AppConfig):
+    name = 'notes'
 
     def ready(self):
         pass

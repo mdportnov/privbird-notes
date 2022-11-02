@@ -3,7 +3,7 @@
 from django.db import migrations, models
 import django.db.models.deletion
 
-import secnote.models
+import notes.models
 
 
 class Migration(migrations.Migration):
@@ -40,8 +40,8 @@ class Migration(migrations.Migration):
                 ('password', models.CharField(blank = True, max_length = 100, null = True)),
                 ('salt', models.CharField(blank = True, max_length = 32)),
                 ('confirmation', models.IntegerField(default = 0)),
-                ('notification', models.ForeignKey(null = True, on_delete = django.db.models.deletion.SET_NULL, to = 'secnote.notification')),
-                ('fake_note', models.ForeignKey(null = True, on_delete = django.db.models.deletion.SET_NULL, to = 'secnote.fakenote')),
+                ('notification', models.ForeignKey(null = True, on_delete = django.db.models.deletion.SET_NULL, to = 'notes.notification')),
+                ('fake_note', models.ForeignKey(null = True, on_delete = django.db.models.deletion.SET_NULL, to = 'notes.fakenote')),
                 ('falsification', models.BooleanField(default = True)),
             ],
         ),
@@ -49,9 +49,9 @@ class Migration(migrations.Migration):
             name = 'Note',
             fields = [
                 ('id', models.AutoField(auto_created = True, primary_key = True, serialize = False, verbose_name = 'ID')),
-                ('slug', models.SlugField(default = secnote.models.generate_slug, unique = True)),
+                ('slug', models.SlugField(default = notes.models.generate_slug, unique = True)),
                 ('content', models.TextField()),
-                ('option', models.ForeignKey(null = True, on_delete = django.db.models.deletion.SET_NULL, to = 'secnote.option')),
+                ('option', models.ForeignKey(null = True, on_delete = django.db.models.deletion.SET_NULL, to = 'notes.option')),
             ],
         ),
         migrations.CreateModel(
