@@ -22,7 +22,7 @@ class OptionAdmin(admin.ModelAdmin):
         'fake_note',
         'falsification',
     )
-    
+
     search_fields = (
         'type',
         'auto_destruction',
@@ -42,7 +42,7 @@ class SupportAdmin(admin.ModelAdmin):
         'problem',
         'email',
     )
-    
+
     search_fields = (
         'email',
     )
