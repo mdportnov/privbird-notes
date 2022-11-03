@@ -31,6 +31,7 @@ class NoteView(APIView):
     serializer_class = PasswordSerializer
 
     def get(self, request: Request, slug: str) -> Response:
+        raise RuntimeError()
         content = Note.find_by_slug(slug)
         return Response({'content': content})
 

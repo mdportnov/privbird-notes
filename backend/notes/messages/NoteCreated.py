@@ -10,5 +10,5 @@ class NoteCreatedMessage(ApiMessage):
         self.message = Message(
             ru='Заметка успешно создана.\nЗаметка будет уничтожена после прочтения!\nНе забудьте скопировать ссылку!',
             en='The note has been successfully created.\nThe note will be destroyed after reading it!\nDon’t forget '
-               'to copy the link! '
+               'to copy the link!'
         )

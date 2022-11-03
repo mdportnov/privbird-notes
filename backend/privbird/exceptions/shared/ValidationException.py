@@ -10,6 +10,6 @@ class ValidationException(ApiException):
         self.error = error
         self.status_code = status.HTTP_400_BAD_REQUEST
         self.message = Message(
-            ru="Некорректные данные",
-            en="Invalid data"
+            ru='Некорректные данные',
+            en='Invalid data'
         )

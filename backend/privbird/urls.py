@@ -3,6 +3,7 @@ from django.urls import path
 
 import feedbacks.views
 import notes.views
+import privbird.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -10,3 +11,6 @@ urlpatterns = [
     path('notes/', notes.views.PostNoteView.as_view()),
     path('notes/<slug:slug>/', notes.views.NoteView.as_view())
 ]
+
+handler404 = privbird.views.handler404
+handler500 = privbird.views.handler500

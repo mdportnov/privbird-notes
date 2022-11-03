@@ -10,6 +10,7 @@ from privbird.utils.Serializable import Serializable
 class ApiException(APIException, Serializable):
     message: Message
     status_code: int
+    detail: str = None
     timestamp: datetime = now()
     error: ValidationError = None
 

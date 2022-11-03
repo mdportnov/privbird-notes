@@ -1,33 +1,38 @@
 from typing import Dict, Tuple
 
+from django.http import JsonResponse
 from rest_framework.exceptions import ValidationError
-from rest_framework.response import Response
-from rest_framework.views import exception_handler
 
-from privbird.exceptions.shared.ValidationException import ValidationException
 from privbird.exceptions.shared.ApiException import ApiException
-
-
-def validation_error_handler(error: ValidationError) -> Tuple[int, Dict]:
-    exception = ValidationException(error.detail)
-    return exception.status_code, exception.serialize()
+from privbird.exceptions.shared.UnexpectedException import UnexpectedException
+from privbird.exceptions.shared.ValidationException import ValidationException
 
 
 def common_handler(exception: ApiException) -> tuple[int, Dict]:
     return exception.status_code, exception.serialize()
 
 
-def prepare_response(exception, exc_handler) -> Response:
+def validation_error_handler(error: ValidationError) -> Tuple[int, Dict]:
+    exception = ValidationException(error.detail)
+    return common_handler(exception)
+
+
+def unexpected_handler() -> Tuple[int, Dict]:
+    exception = UnexpectedException()
+    return common_handler(exception)
+
+
+def prepare_response(exception, exc_handler) -> JsonResponse:
     code, data = exc_handler(exception)
-    response = Response()
+    response = JsonResponse(data=data)
     response.status_code = code
-    response.data = data
     return response
 
 
-def handler(exception, context) -> Response:
+def handler(exception, context) -> JsonResponse:
+    exception_handler = unexpected_handler
     if issubclass(type(exception), ValidationError):
-        return prepare_response(exception, validation_error_handler)
+        exception_handler = validation_error_handler
     if issubclass(type(exception), ApiException):
-        return prepare_response(exception, common_handler)
-    return exception_handler(exception, context)
+        exception_handler = common_handler
+    return prepare_response(exception, exception_handler)
