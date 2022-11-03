@@ -21,22 +21,23 @@ class Note(models.Model):
 
     content = models.TextField(null=True)
 
-    password = models.CharField(max_length=100, default=None, blank=True, null=True)
+    password = models.CharField(max_length=100, default=None, null=True)
     notification = models.BooleanField(default=False)
 
-    fakeContent = models.TextField(default=None, blank=True, null=True)
-    fakePassword = models.TextField(default=None, blank=True, null=True)
+    fakeContent = models.TextField(default=None, null=True)
+    fakePassword = models.TextField(default=None, null=True)
     fakeNotification = models.BooleanField(default=None, null=True)
 
-    salt = models.CharField(max_length=32, default=None, blank=True, null=True)
+    salt = models.CharField(max_length=32, default=None, null=True)
     slug = models.SlugField(max_length=12, unique=True)
     network = models.CharField(max_length=5, choices=Network.choices, default=Network.HTTPS)
     expires = models.DateTimeField(default=Expiration.YEAR.get_expiration())
-    email = models.EmailField(default=None, blank=True, null=True)
+    email = models.EmailField(default=None, null=True)
 
     def generate_values(self):
         self.slug = generate_slug()
-        self.salt = secrets.token_hex(16)
+        if self.password is not None:
+            self.salt = secrets.token_hex(16)
 
     def encrypt_data(self):
         if self.password is not None:
