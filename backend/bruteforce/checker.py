@@ -4,18 +4,18 @@ from settings import *
 
 
 class Checker:
-    name = 'IP'
-    key_template = '{rule}:{checker}:{value}:int'
+    name = "IP"
+    key_template = "{rule}:{checker}:{value}:int"
 
     def __init__(self, connection, request, load_count, **kwargs):
         self.connection = connection
         self.load_count = load_count
         self.key = self.get_key(request, **kwargs)
-        self.limit = getattr(BRUTE_FORCE_LIMITS['default'], self.name)
+        self.limit = getattr(BRUTE_FORCE_LIMITS["default"], self.name)
 
     def get_key(self, request, **kwargs):
         return self.key_template.format(
-            rule='default',
+            rule="default",
             checker=self.name,
             value=get_client_ip(request),
         )
@@ -43,7 +43,7 @@ class Checker:
         return self.get_load_count() < self.limit
 
     @classmethod
-    def clear(cls, connection, rule='*', value='*'):
+    def clear(cls, connection, rule="*", value="*"):
         template = cls.key_template.format(
             rule=rule,
             checker=cls.name,

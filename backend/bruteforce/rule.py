@@ -1,3 +1,3 @@
 from collections import namedtuple
 
-Rule = namedtuple('Rule', ['IP'])
+Rule = namedtuple("Rule", ["IP"])

@@ -2,7 +2,5 @@ from django.apps import AppConfig
 
 
 class NotesConfig(AppConfig):
-    name = 'notes'
-
-    def ready(self):
-        pass
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "notes"

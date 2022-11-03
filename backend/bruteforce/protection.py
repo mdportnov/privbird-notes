@@ -11,7 +11,7 @@ class Attempt:
         db=BRUTE_FORCE_REDIS_DB,
     )
 
-    error = 'Too many requests from this IP!'
+    error = "Too many requests from this IP!"
 
     def __init__(self, request, load_count, **kwargs):
         self.checker = Checker(self.connection, request, load_count, **kwargs)
