@@ -1,36 +1,39 @@
 version: '3'
 
 services:
-    backend:
-        build: ./backend/
-        command: python ./backend/manage.py runserver 0.0.0.0:8000
-        ports:
-            - "8000:8000"
-        environment:
-            DB_HOST: mariadb
-        env_file:
-            - .env.dev
-        volumes:
-            - .:/app
-        depends_on:
-            - mariadb
-    
-    frontend:
-        build: ./frontend/
-        ports:
-            - "8002:80"
-        volumes:
-            - .:/app
-        links:
-            - backend:backend
-    
-    mariadb:
-        container_name: mariadb
-        hostname: mariadb
-        image: mariadb
-        restart: always
-        env_file:
-            - .env.dev
-    
-    redis:
-        image: redis:6-alpine
+  backend:
+    build: ./backend/
+    command: python ./backend/manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: db
+    env_file:
+      - .env.dev
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend/
+    ports:
+      - "8002:80"
+    volumes:
+      - .:/app
+    links:
+      - backend:backend
+
+  db:
+    container_name: db
+    hostname: db
+    image: mariadb
+    restart: always
+    env_file:
+      - .env.dev
+
+  redis:
+    image: redis:6-alpine
+
+volumes:
+  mysql_data:
