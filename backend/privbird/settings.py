@@ -1,12 +1,17 @@
+from os import getenv
 from pathlib import Path
+
+from dotenv import find_dotenv, load_dotenv
+
+load_dotenv(find_dotenv())
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-+_yx0*3rx+f#ej)klg+o$y!9oj0k*-)nhs(js&tl^5aagv97p-'
+SECRET_KEY = getenv('DJANGO_SECRET_KEY', 'secret')
 
-DEBUG = True
+DEBUG = bool(getenv('DJANGO_DEBUG'))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [getenv('DJANGO_ALLOWED_HOSTS', '*').split()]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -57,11 +62,11 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'PrivBird',
-        'USER': 'root',
-        'PASSWORD': 'realpongo',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'NAME': getenv('MYSQL_DATABASE'),
+        'USER': getenv('MYSQL_USER'),
+        'PASSWORD': getenv('MYSQL_PASSWORD'),
+        'HOST': getenv('MYSQL_HOST'),
+        'PORT': getenv('MYSQL_PORT'),
     }
 }
 
