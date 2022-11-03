@@ -3,16 +3,31 @@ version: '3'
 services:
   backend:
     build: ./backend/
+    command: python ./backend/manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
-    environment:
-      DB_HOST: db
     env_file:
       - .env.dev
+    environment:
+      DB_HOST: db
     volumes:
       - .:/app
     depends_on:
       - db
+
+  celery:
+    build: ./backend/
+    command: celery -A privbird worker -B -l INFO
+    env_file:
+        - .env.dev
+    environment:
+      DB_HOST: db
+      CELERY_BROKER_URL: redis://redis:6379/0
+    volumes:
+        - .:/app
+    depends_on:
+        - backend
+        - redis
 
   db:
     container_name: db
@@ -23,6 +38,7 @@ services:
       - .env.dev
 
   redis:
+    hostname: redis
     image: redis:6-alpine
 
   frontend:
@@ -33,6 +49,3 @@ services:
       - .:/app
     links:
       - backend:backend
-
-volumes:
-  mysql_data:
