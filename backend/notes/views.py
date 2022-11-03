@@ -1,38 +1,27 @@
-from typing import Dict
-
-from rest_framework import generics, mixins, status
+from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from notes.dto.request.CreateNoteRequest import CreateNoteRequest
-from notes.dto.serializers.PostNoteFlateRequestSerializer import PostNoteFlateRequestSerializer
-from notes.dto.serializers.PostNoteRequestSerializer import PostNoteRequestSerializer
+from notes.dto.serializers.CreateNoteRequestSerializer import CreateNoteRequestSerializer
 from notes.messages.NoteCreated import NoteCreatedMessage
 from notes.models import Note
 
 
-class PostNoteView(mixins.CreateModelMixin, generics.GenericAPIView):
-    queryset = Note.objects.all()
-    serializer_class = PostNoteRequestSerializer
+class PostNoteView(APIView):
+    serializer_class = CreateNoteRequestSerializer
 
-    def enflate_dict(self, request: Request) -> Dict:
-        serializer = PostNoteRequestSerializer(data=request.data)
+    def get_note_request(self, request: Request) -> CreateNoteRequest:
+        serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
-        data = CreateNoteRequest.from_dict(**serializer.validated_data)
-        return data.enflate_dict()
-
-    def create_note(self, request: Dict) -> Note:
-        serializer = PostNoteFlateRequestSerializer(data=request)
-        if not serializer.is_valid():
-            raise ValidationError(serializer.errors)
-        return serializer.create(serializer.validated_data)
+        return CreateNoteRequest.deserialize(serializer.validated_data)
 
     def post(self, request: Request, *args, **kwargs) -> Response:
-        data = self.enflate_dict(request)
-        note = self.create_note(data)
+        note_request = self.get_note_request(request)
+        note = note_request.save_as_note()
         message = NoteCreatedMessage({'slug': note.slug}).serialize()
         return Response(message, status=status.HTTP_201_CREATED)
 

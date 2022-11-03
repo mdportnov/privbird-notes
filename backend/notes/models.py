@@ -21,7 +21,6 @@ class Note(models.Model):
         I2P = 'I2P'
 
     content = models.TextField(max_length=Constants.MAX_CONTENT_LENGTH, null=True)
-
     password = models.CharField(max_length=Constants.MAX_PASSWORD_LENGTH, default=None, null=True)
     notification = models.BooleanField(default=False)
 
@@ -35,12 +34,39 @@ class Note(models.Model):
     expires = models.DateTimeField(default=Expiration.YEAR.get_expiration())
     email = models.EmailField(default=None, null=True)
 
+    @staticmethod
+    def __find_by_slug(slug: str) -> Note:
+        if not Note.objects.filter(slug=slug).exists():
+            raise NoteNotFoundException()
+        return Note.objects.get(slug=slug)
+
+    @staticmethod
+    def find_by_slug(slug: str) -> str:
+        note = Note.__find_by_slug(slug)
+        if note.password is not None:
+            raise PasswordRequiredException()
+        content = note.get_content()
+        return content
+
+    @staticmethod
+    def find_by_slug_and_password(slug: str, password: str) -> str:
+        note = Note.__find_by_slug(slug)
+        if note.password is None or not check_password(password, note.password):
+            raise InvalidPasswordException()
+        content = note.get_content()
+        return decrypt(password, note.salt, content)
+
+    def check_password_match(self):
+        if self.fakePassword != self.password:
+            self.fakePassword = None
+            self.fakeContent = None
+
     def generate_values(self):
         self.slug = generate_slug()
         if self.password is not None:
             self.salt = secrets.token_hex()[:Constants.SALT_LENGTH]
 
-    def encrypt_data(self):
+    def encrypt_note_data(self):
         if self.password is not None:
             self.content = encrypt(self.password, self.salt, self.content)
             self.password = make_password(self.password, self.salt, 'pbkdf2_sha256')
@@ -52,39 +78,18 @@ class Note(models.Model):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self._state.adding is True:
+            self.check_password_match()
             self.generate_values()
-            self.encrypt_data()
+            self.encrypt_note_data()
             self.encrypt_fake_data()
         super(Note, self).save(force_insert, force_update, using, update_fields)
 
-    def process_read(self):
+    def get_content(self) -> str:
+        result = self.content if self.content else self.fakeContent
         if self.content is not None:
             self.content = None
-            self.save() if self.fakeContent is not None else self.delete()
-            # TODO send email content has been read
+            self.save() if self.fakeContent else self.delete()
         elif self.fakeContent is not None:
             self.fakeContent = None
             self.delete()
-            # TODO send email fake content has been read
-
-    @staticmethod
-    def find_by_slug(slug: str) -> str:
-        if not Note.objects.filter(slug=slug).exists():
-            raise NoteNotFoundException()
-        note = Note.objects.get(slug=slug)
-        if note.password is not None:
-            raise PasswordRequiredException()
-        content = note.content if note.content is not None else note.fakeContent
-        note.process_read()
-        return content
-
-    @staticmethod
-    def find_by_slug_and_password(slug: str, password: str) -> str:
-        if not Note.objects.filter(slug=slug).exists():
-            raise NoteNotFoundException()
-        note = Note.objects.get(slug=slug)
-        if note.password is None or not check_password(password, note.password):
-            raise InvalidPasswordException()
-        content = note.content if note.content is not None else note.fakeContent
-        note.process_read()
-        return decrypt(password, note.salt, content)
+        return result

@@ -1,7 +1,7 @@
 from typing import Any
 
 from privbird.messages.Message import Message
-from privbird.messages.Serializable import Serializable
+from privbird.utils.Serializable import Serializable
 
 
 class ApiMessage(Serializable):

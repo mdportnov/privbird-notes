@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from privbird.messages.Serializable import Serializable
+from privbird.utils.Serializable import Serializable
 
 
 @dataclass

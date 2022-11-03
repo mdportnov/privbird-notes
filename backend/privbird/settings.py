@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = getenv('DJANGO_SECRET_KEY', 'secret')
 
-DEBUG = bool(getenv('DJANGO_DEBUG', False))
+DEBUG = bool(getenv('DJANGO_DEBUG', True))
 
 ALLOWED_HOSTS = getenv('DJANGO_ALLOWED_HOSTS', '*').split()
 
