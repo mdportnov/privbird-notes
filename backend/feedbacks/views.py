@@ -1,6 +1,6 @@
+from django.http import JsonResponse
 from rest_framework import generics, mixins, status
 from rest_framework.request import Request
-from rest_framework.response import Response
 
 from feedbacks.messages.FeedbackCreated import FeedbackCreatedMessage
 from feedbacks.models import Feedback
@@ -11,7 +11,7 @@ class PostFeedbackView(mixins.CreateModelMixin, generics.GenericAPIView):
     queryset = Feedback.objects.all()
     serializer_class = PostFeedbackSerializer
 
-    def post(self, request: Request, *args, **kwargs) -> Response:
+    def post(self, request: Request, *args, **kwargs) -> JsonResponse:
         self.create(request, args, kwargs)
         message = FeedbackCreatedMessage().serialize()
-        return Response(message, status=status.HTTP_201_CREATED)
+        return JsonResponse(message, status=status.HTTP_201_CREATED)
