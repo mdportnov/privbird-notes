@@ -12,3 +12,6 @@ class ApiException(APIException, Serializable):
     status_code: int
     timestamp: datetime = now()
     error: ValidationError = None
+
+    def __init__(self):
+        delattr(ApiException, 'detail')

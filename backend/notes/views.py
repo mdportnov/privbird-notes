@@ -21,7 +21,7 @@ class PostNoteView(mixins.CreateModelMixin, generics.GenericAPIView):
             note = serializer.create(serializer.validated_data)
             message = NoteCreatedMessage({'slug': note.slug}).serialize()
             return Response(message, status=status.HTTP_201_CREATED)
-        raise ValidationError(*serializer.errors)
+        raise ValidationError(serializer.errors)
 
 
 class NoteView(APIView):
