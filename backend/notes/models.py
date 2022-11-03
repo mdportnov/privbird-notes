@@ -83,7 +83,7 @@ class Note(models.Model):
         if not Note.objects.filter(slug=slug).exists():
             raise NoteNotFoundException()
         note = Note.objects.get(slug=slug)
-        if note.password is not None and not check_password(password, note.password):
+        if note.password is None or not check_password(password, note.password):
             raise InvalidPasswordException()
         content = note.content if note.content is not None else note.fakeContent
         note.process_read()

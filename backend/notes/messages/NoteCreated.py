@@ -1,6 +1,13 @@
-from privbird.messages.shared.ApiMessage import ApiMessage
+from typing import Any
+
+from privbird.messages.ApiMessage import ApiMessage
+from privbird.messages.Message import Message
 
 
 class NoteCreatedMessage(ApiMessage):
-    ru = 'Заметка успешно создана'
-    en = 'The note was successfully created'
+    def __init__(self, data: Any):
+        self.data = data
+        self.message = Message(
+            ru='Заметка успешно создана',
+            en='The note was successfully created'
+        )

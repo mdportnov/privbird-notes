@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from feedbacks.messages.FeedbackCreated import FeedbackCreatedMessage
 from feedbacks.models import Feedback
 from feedbacks.serializers.PostFeedbackSerializer import PostFeedbackSerializer
-from privbird.messages.MessageSerializer import MessageSerializer
 
 
 class PostFeedbackView(mixins.CreateModelMixin, generics.GenericAPIView):
@@ -14,5 +13,5 @@ class PostFeedbackView(mixins.CreateModelMixin, generics.GenericAPIView):
 
     def post(self, request: Request, *args, **kwargs) -> Response:
         self.create(request, args, kwargs)
-        message = MessageSerializer(FeedbackCreatedMessage())
-        return Response(message.data, status=status.HTTP_201_CREATED)
+        message = FeedbackCreatedMessage().serialize()
+        return Response(message, status=status.HTTP_201_CREATED)

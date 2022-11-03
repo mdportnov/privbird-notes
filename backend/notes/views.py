@@ -9,7 +9,6 @@ from rest_framework.views import APIView
 from notes.messages.NoteCreated import NoteCreatedMessage
 from notes.models import Note
 from notes.serializers.PostNoteRequestSerializer import PostNoteRequestSerializer
-from privbird.messages.MessageSerializer import MessageSerializer
 
 
 class PostNoteView(mixins.CreateModelMixin, generics.GenericAPIView):
@@ -20,10 +19,9 @@ class PostNoteView(mixins.CreateModelMixin, generics.GenericAPIView):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             note = serializer.create(serializer.validated_data)
-            data = json.dumps({'slug': note.slug})
-            message = MessageSerializer(NoteCreatedMessage(data))
-            return Response(message.data, status=status.HTTP_201_CREATED)
-        raise ValidationError()
+            message = NoteCreatedMessage({'slug': note.slug}).serialize()
+            return Response(message, status=status.HTTP_201_CREATED)
+        raise ValidationError(*serializer.errors)
 
 
 class NoteView(APIView):
