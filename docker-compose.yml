@@ -6,12 +6,14 @@ services:
         command: python ./backend/manage.py runserver 0.0.0.0:8000
         ports:
             - "8000:8000"
+        environment:
+            DB_HOST: mariadb
         env_file:
             - .env.dev
         volumes:
             - .:/app
         depends_on:
-            - db
+            - mariadb
     
     frontend:
         build: ./frontend/
@@ -22,7 +24,9 @@ services:
         links:
             - backend:backend
     
-    db:
+    mariadb:
+        container_name: mariadb
+        hostname: mariadb
         image: mariadb
         restart: always
         env_file:
