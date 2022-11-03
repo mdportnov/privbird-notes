@@ -9,4 +9,3 @@ def delete_notes():
     timestamp = now()
     notes = Note.objects.filter(expires__lt=timestamp)
     notes.delete()
-    print(f'Deleting {len(notes)} notes')
