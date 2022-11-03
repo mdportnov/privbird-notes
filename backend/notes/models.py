@@ -8,6 +8,7 @@ from django.db import models
 from notes.exceptions.InvalidPassword import InvalidPasswordException
 from notes.exceptions.NoteNotFound import NoteNotFoundException
 from notes.exceptions.PasswordRequired import PasswordRequiredException
+from notes.utils.constants import Constants
 from notes.utils.crypto import decrypt, encrypt
 from notes.utils.expiration import Expiration
 from notes.utils.slug import generate_slug
@@ -19,17 +20,17 @@ class Note(models.Model):
         TOR = 'TOR'
         I2P = 'I2P'
 
-    content = models.TextField(null=True)
+    content = models.TextField(max_length=Constants.MAX_CONTENT_LENGTH, null=True)
 
-    password = models.CharField(max_length=100, default=None, null=True)
+    password = models.CharField(max_length=Constants.MAX_PASSWORD_LENGTH, default=None, null=True)
     notification = models.BooleanField(default=False)
 
     fakeContent = models.TextField(default=None, null=True)
     fakePassword = models.TextField(default=None, null=True)
     fakeNotification = models.BooleanField(default=None, null=True)
 
-    salt = models.CharField(max_length=32, default=None, null=True)
-    slug = models.SlugField(max_length=12, unique=True)
+    salt = models.CharField(max_length=Constants.SALT_LENGTH, default=None, null=True)
+    slug = models.SlugField(max_length=Constants.SLUG_LENGTH, unique=True)
     network = models.CharField(max_length=5, choices=Network.choices, default=Network.HTTPS)
     expires = models.DateTimeField(default=Expiration.YEAR.get_expiration())
     email = models.EmailField(default=None, null=True)
@@ -37,7 +38,7 @@ class Note(models.Model):
     def generate_values(self):
         self.slug = generate_slug()
         if self.password is not None:
-            self.salt = secrets.token_hex(16)
+            self.salt = secrets.token_hex()[:Constants.SALT_LENGTH]
 
     def encrypt_data(self):
         if self.password is not None:

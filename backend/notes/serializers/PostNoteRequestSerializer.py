@@ -3,11 +3,12 @@ from rest_framework import serializers
 from notes.models import Note
 from notes.serializers.dto.CreateNoteRequest import CreateNoteRequest
 from notes.serializers.validators.validate_fake_data import validate_fake_data
+from notes.utils.constants import Constants
 from notes.utils.expiration import Expiration
 
 
 class PostNoteRequestSerializer(serializers.ModelSerializer):
-    content = serializers.CharField()
+    content = serializers.CharField(max_length=Constants.MAX_CONTENT_LENGTH)
     password = serializers.CharField(allow_null=True, default=None)
     notification = serializers.BooleanField(default=False)
 
