@@ -1,6 +1,6 @@
 FROM python:3.10-slim-bullseye
 
-RUN apt update && apt install -y netcat
+RUN apt update && apt install -y netcat python-dev
 
 WORKDIR /app/
 

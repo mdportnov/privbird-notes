@@ -62,11 +62,11 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': getenv('MYSQL_DATABASE'),
-        'USER': getenv('MYSQL_USER'),
-        'PASSWORD': getenv('MYSQL_PASSWORD'),
-        'HOST': getenv('MYSQL_HOST'),
-        'PORT': getenv('MYSQL_PORT'),
+        'NAME': getenv('MARIADB_DATABASE'),
+        'USER': getenv('MARIADB_USER'),
+        'PASSWORD': getenv('MARIADB_ROOT_PASSWORD'),
+        'HOST': getenv('MARIADB_HOST'),
+        'PORT': getenv('MARIADB_PORT'),
     }
 }
 
