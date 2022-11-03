@@ -1,10 +1,10 @@
 from rest_framework import serializers
 
-from notes.serializers.dto.CreateNoteRequest import CreateNoteRequest
+from notes.dto.request.CreateFlateNoteRequest import CreateFlateNoteRequest
 
 
 def validate_fake_data(attrs):
-    request = CreateNoteRequest(**attrs)
+    request = CreateFlateNoteRequest(**attrs)
 
     if request.fakePassword is not None:
         if request.fakeContent is None:

@@ -1,18 +1,18 @@
 from rest_framework import serializers
 
+from notes.dto.request.CreateFlateNoteRequest import CreateFlateNoteRequest
+from notes.dto.serializers.validators.validate_fake_data import validate_fake_data
 from notes.models import Note
-from notes.serializers.dto.CreateNoteRequest import CreateNoteRequest
-from notes.serializers.validators.validate_fake_data import validate_fake_data
 from notes.utils.constants import Constants
 from notes.utils.expiration import Expiration
 
 
-class PostNoteRequestSerializer(serializers.ModelSerializer):
+class PostNoteFlateRequestSerializer(serializers.ModelSerializer):
     content = serializers.CharField(max_length=Constants.MAX_CONTENT_LENGTH)
     password = serializers.CharField(allow_null=True, default=None)
     notification = serializers.BooleanField(default=False)
 
-    fakeContent = serializers.CharField(allow_null=True, default=None)
+    fakeContent = serializers.CharField(max_length=Constants.MAX_CONTENT_LENGTH, allow_null=True, default=None)
     fakePassword = serializers.CharField(allow_null=True, default=None)
     fakeNotification = serializers.BooleanField(allow_null=True, default=False)
 
@@ -33,7 +33,7 @@ class PostNoteRequestSerializer(serializers.ModelSerializer):
         return super().validate(attrs)
 
     def create(self, validated_data) -> Note:
-        request = CreateNoteRequest(**validated_data)
+        request = CreateFlateNoteRequest(**validated_data)
         validated_data['expires'] = validated_data['expires'].get_expiration()
         if request.password != request.fakePassword:
             validated_data['fakeContent'] = None

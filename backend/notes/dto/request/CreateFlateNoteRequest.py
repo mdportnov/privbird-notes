@@ -1,12 +1,11 @@
 from dataclasses import dataclass
 
-from django.utils.datetime_safe import datetime
-
 from notes.models import Note
+from notes.utils.expiration import Expiration
 
 
 @dataclass
-class CreateNoteRequest:
+class CreateFlateNoteRequest:
     content: str
     password: str
     notification: bool
@@ -16,5 +15,5 @@ class CreateNoteRequest:
     fakeNotification: bool
 
     network: Note.Network
-    expires: datetime
+    expires: Expiration
     email: str
