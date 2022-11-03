@@ -3,7 +3,6 @@ version: '3'
 services:
   backend:
     build: ./backend/
-    command: python ./backend/manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
     environment:
@@ -15,15 +14,6 @@ services:
     depends_on:
       - db
 
-  frontend:
-    build: ./frontend/
-    ports:
-      - "8002:80"
-    volumes:
-      - .:/app
-    links:
-      - backend:backend
-
   db:
     container_name: db
     hostname: db
@@ -34,6 +24,15 @@ services:
 
   redis:
     image: redis:6-alpine
+
+  frontend:
+    build: ./frontend/
+    ports:
+      - "8002:80"
+    volumes:
+      - .:/app
+    links:
+      - backend:backend
 
 volumes:
   mysql_data:

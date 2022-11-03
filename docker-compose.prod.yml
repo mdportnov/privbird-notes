@@ -22,15 +22,7 @@ services:
       - .:/app
     depends_on:
       - backend
-
-  frontend:
-    build: ./frontend/
-    ports:
-      - "8002:80"
-    volumes:
-      - .:/app
-    links:
-      - backend:backend
+      - redis
 
   db:
     container_name: db
@@ -44,6 +36,15 @@ services:
 
   redis:
     image: redis:6-alpine
+
+  frontend:
+    build: ./frontend/
+    ports:
+      - "8002:80"
+    volumes:
+      - .:/app
+    links:
+      - backend:backend
 
 volumes:
   mysql_data:
