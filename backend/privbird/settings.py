@@ -9,9 +9,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = getenv('DJANGO_SECRET_KEY', 'secret')
 
-DEBUG = bool(getenv('DJANGO_DEBUG'))
+DEBUG = bool(getenv('DJANGO_DEBUG', False))
 
-ALLOWED_HOSTS = [getenv('DJANGO_ALLOWED_HOSTS', '*').split()]
+ALLOWED_HOSTS = getenv('DJANGO_ALLOWED_HOSTS', '*').split()
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -62,11 +62,11 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': getenv('MARIADB_DATABASE'),
-        'USER': getenv('MARIADB_USER'),
-        'PASSWORD': getenv('MARIADB_ROOT_PASSWORD'),
-        'HOST': getenv('DB_HOST'),
-        'PORT': getenv('MARIADB_PORT'),
+        'NAME': getenv('MARIADB_DATABASE', 'PrivBird'),
+        'USER': getenv('MARIADB_USER', 'root'),
+        'PASSWORD': getenv('MARIADB_ROOT_PASSWORD', 'realpongo'),
+        'HOST': getenv('DB_HOST', 'localhost'),
+        'PORT': getenv('MARIADB_PORT', '3306'),
     }
 }
 
