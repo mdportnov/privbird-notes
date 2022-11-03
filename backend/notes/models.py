@@ -20,12 +20,16 @@ class Note(models.Model):
         TOR = 'TOR'
         I2P = 'I2P'
 
+        @classmethod
+        def max_length(cls) -> int:
+            return max(map(len, cls.values))
+
     content = models.TextField(max_length=Constants.MAX_CONTENT_LENGTH, null=True)
     password = models.CharField(max_length=Constants.MAX_PASSWORD_LENGTH, default=None, null=True)
     notification = models.BooleanField(default=False)
 
-    fakeContent = models.TextField(default=None, null=True)
-    fakePassword = models.TextField(default=None, null=True)
+    fakeContent = models.TextField(max_length=Constants.MAX_CONTENT_LENGTH, default=None, null=True)
+    fakePassword = models.TextField(max_length=Constants.MAX_PASSWORD_LENGTH, default=None, null=True)
     fakeNotification = models.BooleanField(default=None, null=True)
 
     salt = models.CharField(max_length=Constants.SALT_LENGTH, default=None, null=True)
