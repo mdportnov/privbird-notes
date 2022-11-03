@@ -21,7 +21,6 @@ class Note(models.Model):
         I2P = 'I2P'
 
     content = models.TextField(max_length=Constants.MAX_CONTENT_LENGTH, null=True)
-
     password = models.CharField(max_length=Constants.MAX_PASSWORD_LENGTH, default=None, null=True)
     notification = models.BooleanField(default=False)
 
