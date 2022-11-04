@@ -3,7 +3,7 @@ from rest_framework import serializers
 from feedbacks.models import Feedback
 
 
-class PostFeedbackSerializer(serializers.ModelSerializer):
+class CreateFeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
         fields = ['feedback', 'email']
