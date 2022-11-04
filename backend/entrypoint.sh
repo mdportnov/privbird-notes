@@ -1,15 +1,18 @@
 #!/bin/bash
 
 echo "Preparing database migrations"
-python ./backend/manage.py makemigrations
+python manage.py makemigrations
 
 echo "Apply database migrations"
-python ./backend/manage.py migrate
+python manage.py migrate
 
 echo "Collect static files"
-python ./backend/manage.py collectstatic --noinput
+python manage.py collectstatic --noinput
 
 echo "Creating superuser"
-python ./backend/manage.py createsuperuser --noinput
+python manage.py createsuperuser --noinput
+
+echo "Start celery worker"
+celery -A privbird worker -B -l INFO
 
 exec "$@"

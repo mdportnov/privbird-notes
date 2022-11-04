@@ -39,7 +39,7 @@ services:
 
   redis:
     hostname: redis
-    image: redis:6-alpine
+    image: redis:latest
 
   frontend:
     build: ./frontend/

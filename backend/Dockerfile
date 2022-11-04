@@ -13,4 +13,4 @@ ENV PYTHONUNBUFFERED 1
 
 ENV PYTHONPATH /app/backend/:$PYTHONPATH
 
-ENTRYPOINT ["sh", "/app/backend/entrypoint.sh"]
+ENTRYPOINT ["sh", "entrypoint.sh"]
