@@ -13,7 +13,7 @@ class Expires(Enum):
     YEAR = timedelta(days=365)
 
     def __str__(self) -> str:
-        return f'Expiration.{self.name}'
+        return f'Expires.{self.name}'
 
     def get_expiration(self) -> datetime:
         return now() + self.value
