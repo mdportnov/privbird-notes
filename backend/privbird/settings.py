@@ -1,24 +1,25 @@
 from os import getenv
 from pathlib import Path
 
-from dotenv import find_dotenv, load_dotenv
-
-# Set debug/production mode
-load_dotenv(find_dotenv('.env'))
-
-DEBUG = int(getenv('DJANGO_DEBUG', 1))
-
-DEBUG_PROPAGATE_EXCEPTIONS = True
+from dotenv import load_dotenv
 
 # Load environment depending on mode
-load_dotenv(find_dotenv('.env.dev' if DEBUG else '.env.prod'))
+load_dotenv()
+
+DEBUG = int(getenv('DJANGO_DEBUG', 0))
+
+DOCS = int(getenv('DJANGO_DOCS', 0))
+
+DEBUG_PROPAGATE_EXCEPTIONS = True
 
 # Application
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = getenv('DJANGO_SECRET_KEY')
+SECRET_KEY = getenv('DJANGO_SECRET_KEY', 'insecure')
 
 ALLOWED_HOSTS = getenv('DJANGO_ALLOWED_HOSTS', '*').split()
+
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'https://127.0.0.1:8000']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -122,7 +123,7 @@ CELERY_BROKER_URL = getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
 
 # Email server configuration
 EMAIL_BACKEND = getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
-EMAIL_USE_TLS = getenv('EMAIL_USE_TLS', True)
+EMAIL_USE_TLS = int(getenv('EMAIL_USE_TLS', 1))
 EMAIL_HOST_USER = getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = getenv('EMAIL_HOST_PASSWORD')
 EMAIL_HOST = getenv('EMAIL_HOST')

@@ -32,7 +32,7 @@ class EmailNotification:
     )
 
     content = Message(
-        ru='{real} записка с ID {id} была только что прочтена, {ending}.',
+        ru='{real} записка с ID {id} была только что прочитана, {ending}.',
         en='The {real} note with ID {id} has just been read, {ending}.'
     )
 
