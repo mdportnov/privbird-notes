@@ -6,10 +6,10 @@ from rest_framework.request import Request
 from rest_framework.views import APIView
 
 from notes.dto.request.CreateNoteRequest import CreateNoteRequest
-from notes.dto.serializers.ContentSerializer import ContentSerializer
 from notes.dto.serializers.NoteRequestSerializer import NoteRequestSerializer
 from notes.dto.serializers.PasswordSerializer import PasswordSerializer
-from notes.messages.NoteCreated import NoteCreatedMessage
+from notes.messages.NoteCreatedMessage import NoteCreatedMessage
+from notes.messages.NoteRetrievedMessage import NoteRetrievedMessage
 from notes.models import Note
 from privbird.messages.ApiMessage import ApiMessage
 
@@ -26,7 +26,7 @@ class CreateNoteView(APIView):
 
     @swagger_auto_schema(
         request_body=NoteRequestSerializer.api_schema(),
-        responses={status.HTTP_200_OK: ApiMessage.api_schema()}
+        responses={status.HTTP_200_OK: NoteCreatedMessage.api_schema()}
     )
     def post(self, request: Request, *args, **kwargs) -> JsonResponse:
         """
@@ -68,7 +68,7 @@ class CreateNoteView(APIView):
 
         note_request = self.get_note_request(request)
         note = note_request.save_as_note()
-        message = NoteCreatedMessage({'slug': note.slug}).serialize()
+        message = NoteCreatedMessage(note.slug).serialize()
         return JsonResponse(message, status=status.HTTP_201_CREATED)
 
 
@@ -77,7 +77,7 @@ class NoteView(APIView):
 
     @swagger_auto_schema(
         operation_id='note_get_without_password',
-        responses={status.HTTP_200_OK: ContentSerializer.api_schema()}
+        responses={status.HTTP_200_OK: NoteRetrievedMessage.api_schema()}
     )
     def get(self, request: Request, slug: str) -> JsonResponse:
         """
@@ -88,12 +88,12 @@ class NoteView(APIView):
         """
 
         content = Note.find_by_slug(slug)
-        response = ContentSerializer({'content': content}).data
+        response = NoteRetrievedMessage(content).serialize()
         return JsonResponse(response)
 
     @swagger_auto_schema(
         operation_id='note_get_with_password',
-        responses={status.HTTP_200_OK: ContentSerializer.api_schema()}
+        responses={status.HTTP_200_OK: NoteRetrievedMessage.api_schema()}
     )
     def post(self, request: Request, slug: str) -> JsonResponse:
         """
@@ -108,5 +108,5 @@ class NoteView(APIView):
             raise ValidationError(serializer.errors)
         password = serializer.validated_data.password
         content = Note.find_by_slug_and_password(slug, password)
-        response = ContentSerializer({'content': content}).data
+        response = NoteRetrievedMessage(content).serialize()
         return JsonResponse(response)
