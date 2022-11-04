@@ -9,13 +9,13 @@ from privbird import settings
 
 def notify(note: Note, is_real: bool):
     has_fake = note.fake_content is not None
-    notification = EmailNotification(is_real=is_real, has_fake=has_fake, slug=note.slug)
+    message = EmailNotification.build(is_real, has_fake, note.slug)
 
-    content = notification.content.en
-    subject = notification.subject.en
+    subject = EmailNotification.subject.en
+    content = message.en
     if note.language == Note.Language.RU:
-        subject = notification.subject.ru
-        content = notification.content.ru
+        subject = EmailNotification.subject.ru
+        content = message.ru
 
     send_mail(
         subject, content,
