@@ -30,6 +30,7 @@ services:
         - redis
 
   db:
+    container_name: mariadb
     hostname: mariadb
     image: mariadb
     restart: always

@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from drf_yasg import openapi
@@ -20,12 +22,13 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/notes/', include('notes.urls')),
-    path('api/feedbacks/', include('feedbacks.urls')),
+  path('admin/', admin.site.urls),
+  path('api/notes/', include('notes.urls')),
+  path('api/feedbacks/', include('feedbacks.urls'))
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-    path('docs/', include('privbird.utils.swagger')),
-]
+if settings.DEBUG:
+    urlpatterns.append(path('docs/', include('privbird.utils.swagger')))
 
 handler404 = privbird.utils.handlers.handler404
 handler500 = privbird.utils.handlers.handler500

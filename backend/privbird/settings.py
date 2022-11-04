@@ -10,10 +10,8 @@ DEBUG = int(getenv('DJANGO_DEBUG', 1))
 
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
-
 # Load environment depending on mode
 load_dotenv(find_dotenv('.env.dev' if DEBUG else '.env.prod'))
-
 
 # Application
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -47,6 +45,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'privbird.urls'
 
+STATIC_ROOT = BASE_DIR / 'static'
+
 STATIC_URL = 'static/'
 
 TEMPLATES = [
@@ -67,18 +67,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'privbird.wsgi.application'
 
-
 # Swagger
 SWAGGER_SETTINGS = {
     'DEFAULT_MODEL_RENDERING': 'example'
 }
 
-
 # RestFramework
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'privbird.exceptions.handler.handler'
 }
-
 
 # Database
 DATABASES = {
@@ -92,10 +89,8 @@ DATABASES = {
     }
 }
 
-
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 # Authentication
 AUTH_PASSWORD_VALIDATORS = [
@@ -113,7 +108,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Locale
 LANGUAGE_CODE = 'en-us'
 
@@ -123,10 +117,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Celery
 CELERY_BROKER_URL = getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
-
 
 # Email server configuration
 EMAIL_BACKEND = getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
