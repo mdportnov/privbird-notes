@@ -88,7 +88,7 @@ DATABASES = {
         'USER': getenv('MARIADB_USER', 'root'),
         'PASSWORD': getenv('MARIADB_ROOT_PASSWORD', 'realpongo'),
         'HOST': getenv('DB_HOST', 'localhost'),
-        'PORT': getenv('MARIADB_PORT', '3306'),
+        'PORT': getenv('DB_PORT', '3306'),
     }
 }
 
