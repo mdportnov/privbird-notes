@@ -42,9 +42,9 @@ class CreateNoteRequest(Serializable):
             password=self.note.password,
             notification=self.note.notification,
 
-            fakeContent=self.fake.content,
-            fakePassword=self.fake.password,
-            fakeNotification=self.fake.notification,
+            fake_content=self.fake.content,
+            fake_password=self.fake.password,
+            fake_notification=self.fake.notification,
 
             network=self.options.network,
             expires=self.options.expires.get_expiration(),

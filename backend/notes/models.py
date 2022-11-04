@@ -28,9 +28,9 @@ class Note(models.Model):
     password = models.CharField(max_length=Constants.MAX_PASSWORD_LENGTH, default=None, null=True)
     notification = models.BooleanField(default=False)
 
-    fakeContent = models.TextField(max_length=Constants.MAX_CONTENT_LENGTH, default=None, null=True)
-    fakePassword = models.TextField(max_length=Constants.MAX_PASSWORD_LENGTH, default=None, null=True)
-    fakeNotification = models.BooleanField(default=None, null=True)
+    fake_content = models.TextField(max_length=Constants.MAX_CONTENT_LENGTH, default=None, null=True)
+    fake_password = models.TextField(max_length=Constants.MAX_PASSWORD_LENGTH, default=None, null=True)
+    fake_notification = models.BooleanField(default=None, null=True)
 
     salt = models.CharField(max_length=Constants.SALT_LENGTH, default=None, null=True)
     slug = models.SlugField(max_length=Constants.SLUG_LENGTH, unique=True)
@@ -61,9 +61,9 @@ class Note(models.Model):
         return decrypt(password, note.salt, content)
 
     def check_password_match(self):
-        if self.fakePassword != self.password:
-            self.fakePassword = None
-            self.fakeContent = None
+        if self.fake_password != self.password:
+            self.fake_password = None
+            self.fake_content = None
 
     def generate_values(self):
         self.slug = generate_slug()
@@ -76,9 +76,9 @@ class Note(models.Model):
             self.password = make_password(self.password, self.salt, 'pbkdf2_sha256')
 
     def encrypt_fake_data(self):
-        if self.fakePassword is not None:
-            self.fakeContent = encrypt(self.fakePassword, self.salt, self.fakeContent)
-            self.fakePassword = make_password(self.fakePassword, self.salt, 'pbkdf2_sha256')
+        if self.fake_password is not None:
+            self.fake_content = encrypt(self.fake_password, self.salt, self.fake_content)
+            self.fake_password = make_password(self.fake_password, self.salt, 'pbkdf2_sha256')
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self._state.adding is True:
@@ -89,11 +89,11 @@ class Note(models.Model):
         super(Note, self).save(force_insert, force_update, using, update_fields)
 
     def get_content(self) -> str:
-        result = self.content if self.content else self.fakeContent
+        result = self.content if self.content else self.fake_content
         if self.content is not None:
             self.content = None
-            self.save() if self.fakeContent else self.delete()
-        elif self.fakeContent is not None:
-            self.fakeContent = None
+            self.save() if self.fake_content else self.delete()
+        elif self.fake_content is not None:
+            self.fake_content = None
             self.delete()
         return result
