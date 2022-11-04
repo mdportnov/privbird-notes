@@ -3,13 +3,15 @@ from pathlib import Path
 
 from dotenv import find_dotenv, load_dotenv
 
-load_dotenv(find_dotenv())
+load_dotenv(find_dotenv('.env'))
+
+DEBUG = int(getenv('DJANGO_DEBUG', 1))
+
+load_dotenv(find_dotenv('.env.dev' if DEBUG else '.env.prod'))
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = getenv('DJANGO_SECRET_KEY', 'INSECURE')
-
-DEBUG = int(getenv('DJANGO_DEBUG', 1))
+SECRET_KEY = getenv('DJANGO_SECRET_KEY', 'change-me-in-production')
 
 ALLOWED_HOSTS = getenv('DJANGO_ALLOWED_HOSTS', '*').split()
 
