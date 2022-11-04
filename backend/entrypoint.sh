@@ -12,7 +12,4 @@ python manage.py collectstatic --noinput
 echo "Creating superuser"
 python manage.py createsuperuser --noinput
 
-echo "Start celery worker"
-celery -A privbird worker -B -l INFO
-
 exec "$@"
