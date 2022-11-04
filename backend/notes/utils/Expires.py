@@ -6,7 +6,7 @@ from django.utils.datetime_safe import datetime
 from django.utils.timezone import now
 
 
-class Expiration(Enum):
+class Expires(Enum):
     DAY = timedelta(days=1)
     WEEK = timedelta(days=7)
     MONTH = timedelta(days=30)

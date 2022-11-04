@@ -2,12 +2,13 @@ from dataclasses import dataclass
 from typing import Optional
 
 from notes.models import Note
-from notes.utils.expiration import Expiration
+from notes.utils.Expires import Expires
 from privbird.utils.Serializable import Serializable
 
 
 @dataclass
-class NoteOptionsRequest(Serializable):
+class OptionsRequest(Serializable):
     network: Note.Network
-    expires: Expiration
+    language: Note.Language
+    expires: Expires
     email: Optional[str]

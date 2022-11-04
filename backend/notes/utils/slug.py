@@ -1,6 +1,6 @@
 from secrets import token_hex
 
-from notes.utils.constants import Constants
+from notes.utils.Constants import Constants
 
 
 def generate_slug() -> str:

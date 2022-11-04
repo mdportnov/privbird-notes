@@ -3,15 +3,22 @@ from pathlib import Path
 
 from dotenv import find_dotenv, load_dotenv
 
+# Set debug/production mode
 load_dotenv(find_dotenv('.env'))
 
 DEBUG = int(getenv('DJANGO_DEBUG', 1))
 
+DEBUG_PROPAGATE_EXCEPTIONS = True
+
+
+# Load environment depending on mode
 load_dotenv(find_dotenv('.env.dev' if DEBUG else '.env.prod'))
 
+
+# Application
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = getenv('DJANGO_SECRET_KEY', 'change-me-in-production')
+SECRET_KEY = getenv('DJANGO_SECRET_KEY')
 
 ALLOWED_HOSTS = getenv('DJANGO_ALLOWED_HOSTS', '*').split()
 
@@ -28,10 +35,6 @@ INSTALLED_APPS = [
     'feedbacks',
 ]
 
-SWAGGER_SETTINGS = {
-    'DEFAULT_MODEL_RENDERING': 'example'
-}
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -43,6 +46,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'privbird.urls'
+
+STATIC_URL = 'static/'
 
 TEMPLATES = [
     {
@@ -62,10 +67,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'privbird.wsgi.application'
 
+
+# Swagger
+SWAGGER_SETTINGS = {
+    'DEFAULT_MODEL_RENDERING': 'example'
+}
+
+
+# RestFramework
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'privbird.exceptions.handler.handler'
 }
 
+
+# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -77,6 +92,12 @@ DATABASES = {
     }
 }
 
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Authentication
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -92,6 +113,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+# Locale
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -100,10 +123,15 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = 'static/'
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-DEBUG_PROPAGATE_EXCEPTIONS = True
-
+# Celery
 CELERY_BROKER_URL = getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+
+
+# Email server configuration
+EMAIL_BACKEND = getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_USE_TLS = getenv('EMAIL_USE_TLS', True)
+EMAIL_HOST_USER = getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = getenv('EMAIL_HOST_PASSWORD')
+EMAIL_HOST = getenv('EMAIL_HOST')
+EMAIL_PORT = getenv('EMAIL_PORT')

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from rest_framework import serializers
 
-from notes.dto.request.NoteOptionsRequest import NoteOptionsRequest
+from notes.dto.request.OptionsRequest import OptionsRequest
 from notes.dto.request.NoteRequest import NoteRequest
 from notes.models import Note
 from privbird.utils.Serializable import Serializable
@@ -12,7 +12,7 @@ from privbird.utils.Serializable import Serializable
 class CreateNoteRequest(Serializable):
     note: NoteRequest
     fake: NoteRequest
-    options: NoteOptionsRequest
+    options: OptionsRequest
 
     def validate(self):
         if self.note.content is None:
@@ -38,15 +38,16 @@ class CreateNoteRequest(Serializable):
 
     def save_as_note(self) -> Note:
         note = Note(
-            content=self.note.content,
-            password=self.note.password,
-            notification=self.note.notification,
+            real_content=self.note.content,
+            real_password=self.note.password,
+            real_notification=self.note.notification,
 
             fake_content=self.fake.content,
             fake_password=self.fake.password,
             fake_notification=self.fake.notification,
 
             network=self.options.network,
+            language=self.options.language,
             expires=self.options.expires.get_expiration(),
             email=self.options.email
         )

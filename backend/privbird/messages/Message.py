@@ -12,8 +12,8 @@ class Message(Serializable):
     be displayed to the client depending on the selected language
     """
 
-    ru: str
-    en: str
+    ru: str = ''
+    en: str = ''
 
     @classmethod
     def api_schema(cls) -> Schema:

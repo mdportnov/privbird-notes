@@ -1,7 +1,7 @@
 from drf_yasg.openapi import Schema, TYPE_BOOLEAN, TYPE_OBJECT, TYPE_STRING
 from rest_framework import serializers
 
-from notes.utils.constants import Constants
+from notes.utils.Constants import Constants
 
 
 class NoteSerializer(serializers.Serializer):
