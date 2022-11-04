@@ -16,6 +16,13 @@ services:
     depends_on:
       - redis
       - db
+
+  celery:
+    build: ./backend/
+    command: celery -A privbird worker -B -l INFO
+    depends_on:
+        - backend
+        - redis
   
   nginx:
     build: ./nginx
@@ -38,7 +45,7 @@ services:
 
   redis:
     hostname: redis
-    image: redis:6-alpine
+    image: redis:latest
 
   frontend:
     build: ./frontend/
