@@ -9,7 +9,7 @@ services:
     env_file:
       - .env.dev
     environment:
-      DB_HOST: db
+      DB_HOST: mariadb
     volumes:
       - .:/app
     depends_on:
@@ -21,7 +21,7 @@ services:
     env_file:
         - .env.dev
     environment:
-      DB_HOST: db
+      DB_HOST: mariadb
       CELERY_BROKER_URL: redis://redis:6379/0
     volumes:
         - .:/app
@@ -30,8 +30,7 @@ services:
         - redis
 
   db:
-    container_name: db
-    hostname: db
+    hostname: mariadb
     image: mariadb
     restart: always
     env_file:

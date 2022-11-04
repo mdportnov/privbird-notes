@@ -87,8 +87,8 @@ DATABASES = {
         'NAME': getenv('MARIADB_DATABASE', 'PrivBird'),
         'USER': getenv('MARIADB_USER', 'root'),
         'PASSWORD': getenv('MARIADB_ROOT_PASSWORD', 'realpongo'),
+        'PORT': getenv('MARIADB_PORT', '3306'),
         'HOST': getenv('DB_HOST', 'localhost'),
-        'PORT': getenv('DB_PORT', '3306'),
     }
 }
 
