@@ -1,4 +1,10 @@
+from re import sub
+
 from privbird.messages.Message import Message
+
+
+def prettify(s: str) -> str:
+    return sub(' +', ' ', s.strip().capitalize())
 
 
 class EmailNotification:
@@ -29,7 +35,7 @@ class EmailNotification:
 
     def __init__(self, is_real: bool, has_fake: bool, slug: str):
         real = self.fake if not is_real else self.real
-        ending = self.has_fake if not has_fake else self.dont_have_fake
+        ending = self.has_fake if is_real and has_fake else self.dont_have_fake
         note_id = slug[-4:].rjust(len(slug), '*')
-        self.content.ru = self.content.ru.format(real=real.ru, id=note_id, ending=ending.ru)
-        self.content.en = self.content.en.format(real=real.en, id=note_id, ending=ending.en)
+        self.content.ru = prettify(self.content.ru.format(real=real.ru, id=note_id, ending=ending.ru))
+        self.content.en = prettify(self.content.en.format(real=real.en, id=note_id, ending=ending.en))

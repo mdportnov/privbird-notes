@@ -12,12 +12,13 @@ def notify(note: Note, is_real: bool):
     notification = EmailNotification(is_real=is_real, has_fake=has_fake, slug=note.slug)
 
     content = notification.content.en
+    subject = notification.subject.en
     if note.language == Note.Language.RU:
+        subject = notification.subject.ru
         content = notification.content.ru
 
     send_mail(
-        notification.subject,
-        content,
+        subject, content,
         settings.EMAIL_HOST_USER,
         [note.email], fail_silently=False,
     )
