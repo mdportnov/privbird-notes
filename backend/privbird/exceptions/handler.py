@@ -27,6 +27,7 @@ def response_exception(exception: ApiException) -> JsonResponse:
 
 def handler(exception, context) -> JsonResponse:
     exception_type = type(exception)
+    print(exception, context)
     if issubclass(exception_type, ValidationError):
         exception = validation_error_handler(exception)
     elif issubclass(exception_type, ParseError):

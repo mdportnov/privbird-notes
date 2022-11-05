@@ -22,11 +22,11 @@ class EmailNotification:
     )
     real = Message()
 
-    ending_has_fake = Message(
+    ending_is_not_destroyed = Message(
         ru='при следующем прочтении будет отображена фейковая записка',
         en='the next time someone reads it, a fake note will be displayed'
     )
-    ending_dont_have_fake = Message(
+    ending_is_destroyed = Message(
         ru='содержимое уничтожено',
         en='the content was destroyed'
     )
@@ -44,8 +44,8 @@ class EmailNotification:
         return content
 
     @classmethod
-    def build(cls, is_real: bool, has_fake: bool, slug: str) -> Message:
-        real = cls.fake if not is_real else cls.real
-        ending = cls.ending_has_fake if is_real and has_fake else cls.ending_dont_have_fake
+    def build(cls, is_real: bool, is_destroyed: bool, slug: str) -> Message:
+        real = cls.real if is_real else cls.fake
+        ending = cls.ending_is_destroyed if is_destroyed else cls.ending_is_not_destroyed
         note_id = slug[-4:].rjust(len(slug), '*')
         return cls.__format(real, note_id, ending)
