@@ -1,12 +1,20 @@
 #!/bin/bash
 
-#echo "Preparing database migrations"
-#python ./backend/manage.py makemigrations
+while ! python manage.py sqlflush > /dev/null 2>&1 ;do
+    echo "Waiting for database..."
+    sleep 1
+done
+
+echo "Preparing database migrations"
+python manage.py makemigrations
 
 echo "Apply database migrations"
-python ./backend/manage.py migrate
+python manage.py migrate
 
-echo "Starting server."
-python ./backend/manage.py runserver 0.0.0.0:8000
+echo "Collect static files"
+python manage.py collectstatic --noinput
+
+echo "Creating superuser"
+python manage.py createsuperuser --noinput
 
 exec "$@"

@@ -1,50 +1,112 @@
-from typing import Dict
-
-from rest_framework import generics, mixins, status
+from django.http import JsonResponse
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
-from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from notes.dto.request.CreateNoteRequest import CreateNoteRequest
-from notes.dto.serializers.PostNoteFlateRequestSerializer import PostNoteFlateRequestSerializer
-from notes.dto.serializers.PostNoteRequestSerializer import PostNoteRequestSerializer
-from notes.messages.NoteCreated import NoteCreatedMessage
+from notes.dto.serializers.NoteRequestSerializer import NoteRequestSerializer
+from notes.dto.serializers.PasswordSerializer import PasswordSerializer
+from notes.messages.NoteCreatedMessage import NoteCreatedMessage
+from notes.messages.NoteRetrievedMessage import NoteRetrievedMessage
 from notes.models import Note
+from privbird.messages.ApiMessage import ApiMessage
 
 
-class PostNoteView(mixins.CreateModelMixin, generics.GenericAPIView):
+class CreateNoteView(APIView):
     queryset = Note.objects.all()
-    serializer_class = PostNoteRequestSerializer
+    serializer_class = NoteRequestSerializer
 
-    def enflate_dict(self, request: Request) -> Dict:
-        serializer = PostNoteRequestSerializer(data=request.data)
+    def get_note_request(self, request: Request) -> CreateNoteRequest:
+        serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
-        data = CreateNoteRequest.from_dict(**serializer.validated_data)
-        return data.enflate_dict()
+        return serializer.validated_data
 
-    def create_note(self, request: Dict) -> Note:
-        serializer = PostNoteFlateRequestSerializer(data=request)
-        if not serializer.is_valid():
-            raise ValidationError(serializer.errors)
-        return serializer.create(serializer.validated_data)
+    @swagger_auto_schema(
+        request_body=NoteRequestSerializer.api_schema(),
+        responses={status.HTTP_200_OK: NoteCreatedMessage.api_schema()}
+    )
+    def post(self, request: Request, *args, **kwargs) -> JsonResponse:
+        """
+        # Create note
+        ## Note
+        `note.content` will be returned the **first** time someone reads the note, and then immediately deleted.
 
-    def post(self, request: Request, *args, **kwargs) -> Response:
-        data = self.enflate_dict(request)
-        note = self.create_note(data)
-        message = NoteCreatedMessage({'slug': note.slug}).serialize()
-        return Response(message, status=status.HTTP_201_CREATED)
+        `note.password` (optional) will be used to encrypt and decrypt the note content.
+
+        `note.notification` if true, a notification will be sent by mail when someone reads the note.
+
+        ---
+
+        ## Fake
+        `fake.content` (optional) will be returned the **second** time someone reads the note,\
+        and then immediately deleted.
+
+        `fake.password` (optional) will be used to encrypt and decrypt the note content.
+        - If different from the note password, the note will be deleted immediately after the **first** time\
+        someone reads the note.
+        - If the `fake.content` is not passed, it must be null.
+
+        `note.notification` (optional) if true, a notification will be sent by mail when someone reads the fake note.
+        - If the `fake.content` is passed, it cannot be null.
+        - If the `fake.content` is not passed, it must be null.
+
+        ---
+
+        ## Options
+        `options.network` defines the network over which this note will be transmitted.
+
+        `options.language` defines the language of email messages.
+
+        `options.expires` defines the time after which the note will be deleted if no one reads it.
+
+        `options.email` defines the email address to which messages about reading the note will be sent.
+        - If at least one flag from `note.notification` or `fake.notification` is set to true, it cannot be null.
+        """
+
+        note_request = self.get_note_request(request)
+        note = note_request.save_as_note()
+        message = NoteCreatedMessage(note.slug).serialize()
+        return JsonResponse(message, status=status.HTTP_201_CREATED)
 
 
 class NoteView(APIView):
-    def get(self, request: Request, slug: str) -> Response:
-        content = Note.find_by_slug(slug)
-        return Response({'content': content})
+    serializer_class = PasswordSerializer
 
-    def post(self, request: Request, slug: str) -> Response:
-        if 'password' not in request.data:
-            raise ValidationError({'password': 'This field must be passed.'})
-        password = request.data['password']
+    @swagger_auto_schema(
+        operation_id='note_get_without_password',
+        responses={status.HTTP_200_OK: NoteRetrievedMessage.api_schema()}
+    )
+    def get(self, request: Request, slug: str) -> JsonResponse:
+        """
+        # Get note by slug without password
+        The content of the note will be destroyed.
+        - If there is no fake content, the note will be destroyed after the first reading.
+        - If there is fake content, it will be returned next time and the note will also be destroyed.
+        """
+
+        content = Note.find_by_slug(slug)
+        response = NoteRetrievedMessage(content).serialize()
+        return JsonResponse(response)
+
+    @swagger_auto_schema(
+        operation_id='note_get_with_password',
+        responses={status.HTTP_200_OK: NoteRetrievedMessage.api_schema()}
+    )
+    def post(self, request: Request, slug: str) -> JsonResponse:
+        """
+        # Get note by slug with password
+        The content of the note will be destroyed.
+        - If there is no fake content, the note will be destroyed after the first reading.
+        - If there is fake content, it will be returned next time and the note will also be destroyed.
+        """
+
+        serializer = self.serializer_class(data=request.data)
+        if not serializer.is_valid():
+            raise ValidationError(serializer.errors)
+        password = serializer.validated_data.password
         content = Note.find_by_slug_and_password(slug, password)
-        return Response({'content': content})
+        response = NoteRetrievedMessage(content).serialize()
+        return JsonResponse(response)
