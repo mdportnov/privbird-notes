@@ -7,3 +7,7 @@ class Feedback(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     feedback = models.TextField(max_length=Constants.MAX_FEEDBACK_LENGTH)
     email = models.EmailField(default=None, null=True)
+
+    def __str__(self) -> str:
+        author = self.email if self.email is not None else 'anonymous'
+        return f'Feedback from {author}'

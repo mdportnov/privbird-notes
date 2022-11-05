@@ -171,3 +171,6 @@ class Note(models.Model):
         from notes.tasks import notify
         if is_real and self.real_notification or not is_real and self.fake_notification:
             notify(self, is_real, is_destroyed)
+
+    def __str__(self) -> str:
+        return f'Note {self.slug}'

@@ -44,6 +44,8 @@ class CreateNoteView(APIView):
         and then immediately deleted.
 
         `fake.password` (optional) will be used to encrypt and decrypt the note content.
+        - If the `note.password` is passed, it cannot be null.
+        - If the `note.password` is not passed, it must be null.
         - If different from the note password, the note will be deleted immediately after the **first** time\
         someone reads the note.
         - If the `fake.content` is not passed, it must be null.
@@ -61,7 +63,7 @@ class CreateNoteView(APIView):
 
         `options.expires` defines the time after which the note will be deleted if no one reads it.
 
-        `options.email` defines the email address to which messages about reading the note will be sent.
+        `options.email` (optional) defines the email address to which messages about reading the note will be sent.
         - If at least one flag from `note.notification` or `fake.notification` is set to true, it cannot be null.
         """
 
