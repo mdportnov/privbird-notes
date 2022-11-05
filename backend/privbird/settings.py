@@ -6,9 +6,7 @@ from dotenv import load_dotenv
 # Load environment depending on mode
 load_dotenv()
 
-DEBUG = int(getenv('DJANGO_DEBUG', 0))
-
-DOCS = int(getenv('DJANGO_DOCS', 0))
+DEBUG = int(getenv('DJANGO_DEBUG', 1))
 
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
@@ -19,7 +17,12 @@ SECRET_KEY = getenv('DJANGO_SECRET_KEY', 'insecure')
 
 ALLOWED_HOSTS = getenv('DJANGO_ALLOWED_HOSTS', '*').split()
 
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'https://127.0.0.1:8000']
+CSRF_TRUSTED_ORIGINS = [
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+    'https://127.0.0.1:8000',
+    'https://localhost:8000'
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',

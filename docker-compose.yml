@@ -46,12 +46,3 @@ services:
   redis:
     hostname: redis
     image: redis:latest
-
-  frontend:
-    build: ./frontend/
-    ports:
-      - "8002:80"
-    volumes:
-      - .:/app
-    links:
-      - backend:backend

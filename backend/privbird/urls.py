@@ -27,7 +27,7 @@ urlpatterns = [
   path('api/feedbacks/', include('feedbacks.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-if settings.DOCS:
+if settings.DEBUG:
     urlpatterns.append(path('docs/', include('privbird.utils.swagger')))
 
 handler404 = privbird.utils.handlers.handler404
