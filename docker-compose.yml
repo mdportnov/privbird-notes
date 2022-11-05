@@ -29,6 +29,13 @@ services:
         - backend
         - redis
 
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./frontend/:/frontend/
+
   mariadb:
     hostname: mariadb
     image: mariadb

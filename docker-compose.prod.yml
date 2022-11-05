@@ -27,9 +27,11 @@ services:
   nginx:
     build: ./nginx
     ports:
-      - 8000:80
+      - 8000:8000
+      - 80:80
     volumes:
-      - ./backend/:/app/
+      - ./backend/:/backend/
+      - ./frontend/:/frontend/
     depends_on:
       - backend
     links:
@@ -47,15 +49,6 @@ services:
   redis:
     hostname: redis
     image: redis:latest
-
-  frontend:
-    build: ./frontend/
-    ports:
-      - "8002:80"
-    volumes:
-      - .:/app
-    links:
-      - backend:backend
 
 volumes:
   mysql_data:
