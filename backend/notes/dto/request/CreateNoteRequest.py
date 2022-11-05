@@ -22,10 +22,6 @@ class CreateNoteRequest(Serializable):
             if self.fake.password is not None:
                 raise serializers.ValidationError({'fake': {'password': 'This field must be null.'}})
 
-        if self.note.password is not None:
-            if self.fake.password is None:
-                raise serializers.ValidationError({'fake': {'password': 'This field may not be null.'}})
-
         if self.note.notification is None:
             raise serializers.ValidationError({'note': {'content': 'This field may not be null.'}})
 
@@ -37,6 +33,10 @@ class CreateNoteRequest(Serializable):
                 raise serializers.ValidationError({'fake': {'notification': 'This field must be null.'}})
 
         if self.fake.content is not None:
+            if self.note.password is not None:
+                if self.fake.password is None:
+                    raise serializers.ValidationError({'fake': {'password': 'This field may not be null.'}})
+
             if self.fake.notification is None:
                 raise serializers.ValidationError({'fake': {'notification': 'This field may not be null.'}})
 
