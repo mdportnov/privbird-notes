@@ -11,7 +11,6 @@ from notes.dto.serializers.PasswordSerializer import PasswordSerializer
 from notes.messages.NoteCreatedMessage import NoteCreatedMessage
 from notes.messages.NoteRetrievedMessage import NoteRetrievedMessage
 from notes.models import Note
-from privbird.messages.ApiMessage import ApiMessage
 
 
 class CreateNoteView(APIView):
@@ -45,6 +44,8 @@ class CreateNoteView(APIView):
         and then immediately deleted.
 
         `fake.password` (optional) will be used to encrypt and decrypt the note content.
+        - If the `note.password` is passed, it cannot be null.
+        - If the `note.password` is not passed, it must be null.
         - If different from the note password, the note will be deleted immediately after the **first** time\
         someone reads the note.
         - If the `fake.content` is not passed, it must be null.
@@ -62,7 +63,7 @@ class CreateNoteView(APIView):
 
         `options.expires` defines the time after which the note will be deleted if no one reads it.
 
-        `options.email` defines the email address to which messages about reading the note will be sent.
+        `options.email` (optional) defines the email address to which messages about reading the note will be sent.
         - If at least one flag from `note.notification` or `fake.notification` is set to true, it cannot be null.
         """
 
@@ -87,7 +88,7 @@ class NoteView(APIView):
         - If there is fake content, it will be returned next time and the note will also be destroyed.
         """
 
-        content = Note.find_by_slug(slug)
+        content = Note.read_content_by_slug(slug)
         response = NoteRetrievedMessage(content).serialize()
         return JsonResponse(response)
 
@@ -107,6 +108,6 @@ class NoteView(APIView):
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
         password = serializer.validated_data.password
-        content = Note.find_by_slug_and_password(slug, password)
+        content = Note.read_content_by_slug_and_password(slug, password)
         response = NoteRetrievedMessage(content).serialize()
         return JsonResponse(response)

@@ -1,3 +1,7 @@
+import json
+import logging
+from typing import Dict
+
 from django.http import JsonResponse
 from rest_framework.exceptions import ParseError, ValidationError
 
@@ -5,6 +9,12 @@ from privbird.exceptions.shared.ApiException import ApiException
 from privbird.exceptions.shared.ParseException import ParseException
 from privbird.exceptions.shared.UnexpectedException import UnexpectedException
 from privbird.exceptions.shared.ValidationException import ValidationException
+
+logger = logging.getLogger(__name__)
+
+
+def log(exception: BaseException, context: Dict):
+    logger.warning(f'Error occurred: {exception.__class__.__name__} {context}')
 
 
 def validation_error_handler(error: ValidationError) -> ValidationException:
@@ -26,6 +36,7 @@ def response_exception(exception: ApiException) -> JsonResponse:
 
 
 def handler(exception, context) -> JsonResponse:
+    log(exception, context)
     exception_type = type(exception)
     if issubclass(exception_type, ValidationError):
         exception = validation_error_handler(exception)

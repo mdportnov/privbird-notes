@@ -7,9 +7,8 @@ from notes.utils.EmailNotification import EmailNotification
 from privbird import settings
 
 
-def notify(note: Note, is_real: bool):
-    has_fake = note.fake_content is not None
-    message = EmailNotification.build(is_real, has_fake, note.slug)
+def notify(note: Note, is_real: bool, is_destroyed: bool):
+    message = EmailNotification.build(is_real, is_destroyed, note.slug)
 
     subject = EmailNotification.subject.en
     content = message.en
