@@ -1,13 +1,12 @@
 from django.http import JsonResponse
-from drf_yasg.openapi import Schema, TYPE_OBJECT
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, status
 from rest_framework.request import Request
 
-from feedbacks.messages.FeedbackCreated import FeedbackCreatedMessage
+from feedbacks.dto.messages.FeedbackCreated import FeedbackCreatedMessage
 from feedbacks.models import Feedback
-from feedbacks.serializers.CreateFeedbackSerializer import CreateFeedbackSerializer
-from privbird.messages.ApiMessage import ApiMessage
+from feedbacks.dto.serializers.CreateFeedbackSerializer import CreateFeedbackSerializer
+from privbird.dto.messages.ApiMessage import ApiMessage
 
 
 class CreateFeedbackView(generics.CreateAPIView):
@@ -23,5 +22,4 @@ class CreateFeedbackView(generics.CreateAPIView):
         """
 
         self.create(request)
-        message = FeedbackCreatedMessage().serialize()
-        return JsonResponse(message, status=status.HTTP_201_CREATED)
+        return FeedbackCreatedMessage().as_json_response()

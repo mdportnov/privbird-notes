@@ -5,11 +5,13 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
+from notes.dto.exceptions.NoteNotFound import NoteNotFoundException
+from notes.dto.exceptions.PasswordRequired import PasswordRequiredException
+from notes.dto.messages.NoteCreatedMessage import NoteCreatedMessage
+from notes.dto.messages.NoteRetrievedMessage import NoteRetrievedMessage
 from notes.dto.request.CreateNoteRequest import CreateNoteRequest
 from notes.dto.serializers.NoteRequestSerializer import NoteRequestSerializer
 from notes.dto.serializers.PasswordSerializer import PasswordSerializer
-from notes.messages.NoteCreatedMessage import NoteCreatedMessage
-from notes.messages.NoteRetrievedMessage import NoteRetrievedMessage
 from notes.models import Note
 
 
@@ -68,13 +70,43 @@ class CreateNoteView(APIView):
         """
 
         note_request = self.get_note_request(request)
-        note = note_request.save_as_note()
-        message = NoteCreatedMessage(note.slug).serialize()
-        return JsonResponse(message, status=status.HTTP_201_CREATED)
+        note = note_request.validate_and_save()
+        message = NoteCreatedMessage(note.slug)
+        return message.as_json_response()
 
 
 class NoteView(APIView):
     serializer_class = PasswordSerializer
+
+    @staticmethod
+    def find_by_slug(slug: str):
+        """
+        Find Note entity by slug
+        """
+
+        if not Note.objects.filter(slug=slug).exists():
+            raise NoteNotFoundException()
+        return Note.objects.get(slug=slug)
+
+    @staticmethod
+    def get_content_by_slug(slug: str) -> str:
+        """
+        Read Note content, when real_password and fake_password are both None
+        """
+
+        note = NoteView.find_by_slug(slug)
+        if note.real_password or note.fake_password:
+            raise PasswordRequiredException()
+        return note.get_raw_content()
+
+    @staticmethod
+    def get_content_by_slug_and_password(slug: str, password: str) -> str:
+        """
+        Read Note content, when real_password or fake_password are not None
+        """
+
+        note = NoteView.find_by_slug(slug)
+        return note.get_decrypted_content(password)
 
     @swagger_auto_schema(
         operation_id='note_get_without_password',
@@ -88,9 +120,8 @@ class NoteView(APIView):
         - If there is fake content, it will be returned next time and the note will also be destroyed.
         """
 
-        content = Note.read_content_by_slug(slug)
-        response = NoteRetrievedMessage(content).serialize()
-        return JsonResponse(response)
+        content = NoteView.get_content_by_slug(slug)
+        return NoteRetrievedMessage(content).as_json_response()
 
     @swagger_auto_schema(
         operation_id='note_get_with_password',
@@ -108,6 +139,5 @@ class NoteView(APIView):
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
         password = serializer.validated_data.password
-        content = Note.read_content_by_slug_and_password(slug, password)
-        response = NoteRetrievedMessage(content).serialize()
-        return JsonResponse(response)
+        content = NoteView.get_content_by_slug_and_password(slug, password)
+        return NoteRetrievedMessage(content).as_json_response()

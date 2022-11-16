@@ -78,7 +78,7 @@ SWAGGER_SETTINGS = {
 
 # RestFramework
 REST_FRAMEWORK = {
-    'EXCEPTION_HANDLER': 'privbird.exceptions.handler.handler'
+    'EXCEPTION_HANDLER': 'privbird.utils.handlers.exception_handler'
 }
 
 # Database

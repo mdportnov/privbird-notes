@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
-from privbird.utils.Serializable import Serializable
+from privbird.dto.Serializable import Serializable
 
 
 @dataclass

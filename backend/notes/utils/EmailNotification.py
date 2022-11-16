@@ -2,7 +2,7 @@ import copy
 from dataclasses import dataclass
 from re import sub
 
-from privbird.messages.Message import Message
+from privbird.dto.messages.Message import Message
 
 
 def prettify(s: str) -> str:

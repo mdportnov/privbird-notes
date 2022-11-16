@@ -9,5 +9,5 @@ class Feedback(models.Model):
     email = models.EmailField(default=None, null=True)
 
     def __str__(self) -> str:
-        author = self.email if self.email is not None else 'anonymous'
+        author = self.email if self.email else 'anonymous'
         return f'Feedback from {author}'
