@@ -1,0 +1,21 @@
+$breakpoints: (
+  lg: 1440px,
+  md: 768px,
+  sm: 576px,
+);
+
+$bp-lg: map-get($breakpoints, lg);
+$bp-md-max: $bp-lg - 1px;
+$bp-md: map-get($breakpoints, md);
+$bp-sm-max: $bp-md - 1px;
+$bp-sm: map-get($breakpoints, sm);
+$bp-xs-max: $bp-sm - 1px;
+
+:export {
+  lg: $bp-lg;
+  mdMax: $bp-md-max;
+  md: $bp-md;
+  smMax: $bp-sm-max;
+  sm: $bp-sm;
+  xsMax: $bp-xs-max;
+}

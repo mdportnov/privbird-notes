@@ -1,0 +1,45 @@
+body {
+  --color-background: rgba(255, 255, 255, 1);
+  --color-background-mute: rgba(240, 240, 240, 1);
+
+  --color-blue: rgba(25, 154, 224, 1);
+  --color-cyan: rgba(9, 208, 215, 1);
+  --color-positive: rgba(221, 251, 234, 1);
+  --color-negative: rgba(244, 152, 155, 1);
+
+  --color-text: rgba(0, 0, 0, 1);
+  --color-text-input: rgba(96, 98, 102, 1);
+  --color-text-positive: rgba(36, 159, 93, 1);
+  --color-text-negative: rgba(170, 40, 40, 1);
+
+  --color-stroke: var(--color-text);
+  --color-accent: var(--color-cyan);
+  --color-error: rgba(243, 45, 45, 1);
+
+  --color-shadow: rgba(0, 0, 0, 0.25);
+  --color-shadow-active: rgba(0, 0, 0, 0.3);
+  --color-shadow-mute: rgba(34, 60, 80, 0.4);
+  --color-gradient-primary: var(--color-blue) 0%, var(--color-cyan) 100%;
+
+  --box-shadow: 0px 4px 4px var(--color-shadow);
+  --box-shadow-active: 0px 10px 10px var(--color-shadow-active);
+  --box-shadow-mute: 0 40px 75px -20px var(--color-shadow-mute);
+  --box-shadow-mute-active: 0 40px 75px 0 var(--color-shadow-mute);
+
+  --color-overlay: rgba(0, 0, 0, 0.3);
+
+  &.dark {
+    --color-background: rgba(11, 11, 11, 1);
+    --color-background-mute: rgba(26, 26, 26, 1);
+
+    --color-text: rgba(255, 255, 255, 1);
+
+    --color-stroke: rgba(176, 176, 176, 1);
+
+    --color-shadow: rgba(255, 255, 255, 0.25);
+    --color-shadow-active: rgba(255, 255, 255, 0.3);
+    --color-shadow-mute: rgba(81, 144, 192, 0.4);
+
+    --color-overlay: rgba(255, 255, 255, 0.1);
+  }
+}
