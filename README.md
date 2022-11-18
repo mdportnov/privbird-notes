@@ -28,3 +28,4 @@ docker-compose -f .\docker-compose.prod.yml up --build -d
 > Credentials are configured in `.env` files
 
 - /admin/ - Django admin panel
+- /rosetta/ - Rosetta translation interface (authorization via admin panel required)

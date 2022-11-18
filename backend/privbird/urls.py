@@ -22,9 +22,10 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-  path('admin/', admin.site.urls),
-  path('api/notes/', include('notes.urls')),
-  path('api/feedbacks/', include('feedbacks.urls'))
+    path('admin/', admin.site.urls),
+    path('rosetta/', include('rosetta.urls')),
+    path('api/notes/', include('notes.urls')),
+    path('api/feedbacks/', include('feedbacks.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:

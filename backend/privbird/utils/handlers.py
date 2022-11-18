@@ -11,7 +11,6 @@ from privbird.dto.exceptions.ValidationException import ValidationException
 
 
 def exception_handler(exception, context) -> JsonResponse:
-    # raise exception
     traceback.print_exc()
     if isinstance(exception, ApiException):
         exception: ApiException
