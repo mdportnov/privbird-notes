@@ -10,7 +10,6 @@ import type { INoteData } from '@/models/notes/data'
 import { INoteForm } from '@/models/notes/form'
 import AMessageModal from '../../../components/message/AMessageModal.vue'
 import { ref } from 'vue'
-import { useLocale } from '@/utils/i18n'
 
 const route = useRoute()
 const slug = route.params.slug as string
@@ -21,15 +20,13 @@ const { handleSubmit } = useForm<INoteData.Password>({
   validationSchema: INoteForm.passValidation(),
 })
 
-const locale = useLocale()
-
 const error = ref('')
 const showError = ref(false)
 
 const onSubmit = handleSubmit(async (form) => {
   const res = await store.passFetch(slug, form)
   if (res.error?.statusCode === 403) {
-    error.value = res.error.message[locale.value]
+    error.value = res.error.message
     showError.value = true
   }
 })

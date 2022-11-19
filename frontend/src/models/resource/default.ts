@@ -1,8 +1,7 @@
-import type { IApiMessage } from './message'
-
 export interface IRes<T = unknown> {
   data: T
-  message: IApiMessage
+  message: string
+  timestamp: string
 }
 
 export namespace IRes {

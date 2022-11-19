@@ -1,11 +1,10 @@
+import { errorLocales } from '@/i18n/error'
+import { getLocale } from '@/utils/i18n'
 import type { AxiosError } from 'axios'
 
 export interface IResourceError {
   statusCode: Optional<number>
-  message: {
-    en: string
-    ru: string
-  }
+  message: string
   original: AxiosError<IAxiosError>
 }
 
@@ -15,26 +14,15 @@ export namespace IResourceError {
       statusCode: err.response?.status,
       message:
         (err.response?.data as IApiError)?.message ||
-        (err.message === 'ETIMEDOUT'
-          ? {
-              en: 'The server does not respond!',
-              ru: 'Сервер не отвечает!',
-            }
-          : {
-              en: 'Unexpected error!',
-              ru: 'Неизвестная ошибка!',
-            }),
+        errorLocales[getLocale()]['EUNEXPECTED'],
       original: err,
     }
   }
 }
 
 export interface IApiError {
-  message: {
-    en: string
-    ru: string
-  }
-  status_code: number
+  message: string
+  timestamp: string
 }
 
 export type IServerError = IApiError

@@ -1,4 +1,3 @@
-import type { ILocale } from '../i18n/locale'
 import type { EExpires } from './expires'
 import type { INoteForm } from './form'
 import type { ENetwork } from './network'
@@ -26,12 +25,11 @@ export namespace INoteData {
     network: ENetwork
     expires: EExpires
     email: Nullable<string>
-    language: Uppercase<ILocale>
   }
 
   export type Password = Pick<Note, 'password'>
 
-  export function fromForm(form: INoteForm, locale: ILocale): INoteData {
+  export function fromForm(form: INoteForm): INoteData {
     return {
       note: {
         content: form.note.content,
@@ -47,7 +45,6 @@ export namespace INoteData {
         network: form.options?.network || 'HTTPS',
         expires: form.options?.expires || 'Expires.YEAR',
         email: form.options?.email || null,
-        language: locale.toUpperCase() as Options['language'],
       },
     }
   }

@@ -6,17 +6,14 @@ import IClipboard from '../../components/icons/IClipboard.vue'
 import AMessageModal from '../../components/message/AMessageModal.vue'
 import { useNoteFormStore } from '@/stores/noteForm'
 import { useRouter } from 'vue-router'
-import { useLocale } from '@/utils/i18n'
 
 const router = useRouter()
 const store = useNoteFormStore()
 onBeforeMount(() => !store.slug.data && router.replace('/'))
 
-const locale = useLocale()
-
 const slug = computed(() => store.slug.data)
 const url = computed(() => `${window.location.origin}/notes/${slug.value?.data.slug}`)
-const message = computed(() => slug.value?.message[locale.value])
+const message = computed(() => slug.value?.message)
 
 const showClipboardMesage = ref(false)
 const showClipboardErrorMesage = ref(false)

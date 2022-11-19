@@ -17,10 +17,8 @@ import { EExpires } from '@/models/notes/expires'
 import { INoteForm } from '@/models/notes/form'
 import { useNoteFormStore } from '@/stores/noteForm'
 import { INoteData } from '@/models/notes/data'
-import { useLocale } from '@/utils/i18n'
 
 const router = useRouter()
-const locale = useLocale()
 
 const store = useNoteFormStore()
 
@@ -53,9 +51,9 @@ const errorMessage = ref('')
 const showErrorMessage = ref(false)
 
 const onSubmit = handleSubmit(async (form) => {
-  const res = await store.create(INoteData.fromForm(form, locale.value))
+  const res = await store.create(INoteData.fromForm(form))
   if (res.error) {
-    errorMessage.value = res.error.message[locale.value]
+    errorMessage.value = res.error.message
     showErrorMessage.value = true
   } else router.replace('/notes/create/done')
 })

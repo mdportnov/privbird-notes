@@ -10,7 +10,6 @@ import AMessageModal from '../../components/message/AMessageModal.vue'
 import { IFeedbackForm } from '@/models/feedback/form'
 import { useFeedbackStore } from '@/stores/feedback'
 import { IFeedbackData } from '@/models/feedback/data'
-import { useLocale } from '@/utils/i18n'
 
 defineProps<{
   show: boolean
@@ -23,7 +22,6 @@ const emit = defineEmits<{
 const close = () => emit('update:show', false)
 useEscape(close)
 
-const locale = useLocale()
 const store = useFeedbackStore()
 
 const { handleSubmit } = useForm<IFeedbackForm>({
@@ -36,9 +34,9 @@ const showMessage = ref(false)
 const onSubmit = handleSubmit(async (form) => {
   const res = await store.send(IFeedbackData.fromForm(form))
   if (res.error) {
-    message.value = res.error.message[locale.value]
+    message.value = res.error.message
   } else {
-    message.value = res.data.message[locale.value]
+    message.value = res.data.message
     close()
   }
   showMessage.value = true

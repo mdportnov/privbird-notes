@@ -7,7 +7,6 @@ import { onBeforeMount, ref } from 'vue'
 import { vLoading } from 'element-plus'
 import 'element-plus/es/components/loading/style/css'
 import AMessageModal from '@/components/message/AMessageModal.vue'
-import { useLocale } from '@/utils/i18n'
 
 const router = useRouter()
 
@@ -21,8 +20,6 @@ onBeforeMount(async () => {
   }
 })
 
-const locale = useLocale()
-
 const error = ref('')
 const showError = ref(false)
 store.$onAction(({ after }) => {
@@ -30,7 +27,7 @@ store.$onAction(({ after }) => {
     if (res.error?.statusCode === 404) {
       router.replace('/not-found')
     } else if (res.error && res.error.statusCode !== 403) {
-      error.value = res.error.message[locale.value]
+      error.value = res.error.message
       showError.value = true
     }
   })
