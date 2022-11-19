@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from feedbacks.models import Feedback
-from feedbacks.utils.constants import Constants
+from feedbacks.utils.Constants import Constants
 
 
 @admin.register(Feedback)

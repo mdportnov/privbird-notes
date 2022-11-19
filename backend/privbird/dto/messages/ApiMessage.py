@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 from typing import Dict, Optional
 
-from drf_yasg.openapi import Schema, TYPE_OBJECT
+from drf_yasg.openapi import Schema, TYPE_OBJECT, TYPE_STRING
 
 from privbird.dto.ApiResponse import ApiResponse
-from privbird.dto.messages.Message import Message
 
 
 @dataclass
@@ -25,7 +24,7 @@ class ApiMessage(ApiResponse):
             title=cls.__name__,
             type=TYPE_OBJECT,
             properties={
-                'message': Message.api_schema(),
+                'message': Schema(title='text', type=TYPE_STRING),
                 'data': cls.data_schema
             }
         )

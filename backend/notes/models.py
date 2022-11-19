@@ -18,10 +18,6 @@ class Note(models.Model):
         TOR = 'TOR'
         I2P = 'I2P'
 
-    class Language(models.TextChoices):
-        RU = 'RU'
-        EN = 'EN'
-
     # Real content
     real_content = models.TextField(max_length=Constants.MAX_CONTENT_LENGTH, null=True)
     real_password = models.CharField(max_length=Constants.MAX_PASSWORD_LENGTH, default=None, null=True)
@@ -34,7 +30,6 @@ class Note(models.Model):
 
     # Options
     network = models.CharField(max_length=5, choices=Network.choices, default=Network.HTTPS)
-    language = models.CharField(max_length=2, choices=Language.choices, default=Language.EN)
     expires = models.DateTimeField()
     email = models.EmailField(default=None, null=True)
 

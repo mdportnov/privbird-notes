@@ -23,7 +23,6 @@ class CreateNoteRequest(Serializable):
             fake_notification=self.fake.notification,
 
             network=self.options.network,
-            language=self.options.language,
             expires=self.options.expires.get_expiration(),
             email=self.options.email
         )

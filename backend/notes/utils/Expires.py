@@ -1,6 +1,5 @@
 from datetime import timedelta
 from enum import Enum
-from typing import Dict
 
 from django.utils.datetime_safe import datetime
 from django.utils.timezone import now

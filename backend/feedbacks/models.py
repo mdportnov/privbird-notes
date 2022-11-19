@@ -1,6 +1,6 @@
 from django.db import models
 
-from feedbacks.utils.constants import Constants
+from feedbacks.utils.Constants import Constants
 
 
 class Feedback(models.Model):

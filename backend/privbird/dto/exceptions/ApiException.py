@@ -16,4 +16,5 @@ class ApiException(APIException, ApiResponse):
     error: Optional[ValidationError] = None
 
     def __init__(self):
-        super().__init__()
+        APIException.__init__(self)
+        ApiResponse.__init__(self)
