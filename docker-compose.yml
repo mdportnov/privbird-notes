@@ -21,8 +21,6 @@ services:
     environment:
       DB_HOST: mariadb
       CELERY_BROKER_URL: redis://redis:6379/0
-    volumes:
-        - ./backend/:/app/
     depends_on:
         - backend
         - redis
@@ -48,8 +46,8 @@ services:
   nginx:
     build: ./nginx
     ports:
-      - 8000:8000
-      - 80:80
+      - "8000:8000"
+      - "80:80"
     volumes:
       - ./backend/:/backend/
       - frontend_dist:/frontend/
