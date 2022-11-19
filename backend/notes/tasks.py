@@ -11,8 +11,7 @@ from privbird.celery import app
 
 @app.task
 def notify(email: str, message: str):
-    logger.info(f'Notification for {email}: {message}')
-    print('kek')
+    logger.info(f'Send email notification for {email}')
     send_mail(
         subject=_('PrivBird notification'),
         message=message,
