@@ -26,6 +26,11 @@ const store = useFeedbackStore()
 
 const { handleSubmit } = useForm<IFeedbackForm>({
   validationSchema: IFeedbackForm.validation(),
+  initialValues: {
+    feedback:
+      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores distinctio, fugiat facere suscipit itaque quibusdam nulla praesentium non illo. Minima pariatur enim ab veritatis corrupti nihil, omnis aspernatur tempora. Dolorum maxime dolor ex omnis accusantium vero unde sequi ullam dolorem cumque laudantium expedita id dignissimos quae, enim recusandae porro optio et suscipit sed. Accusamus reiciendis, ut tempora debitis, asperiores eius nam magni vel, suscipit itaque molestias hic eligendi? Deserunt, molestiae minima? Voluptates esse quod accusamus corrupti hic officiis corporis qui iste praesentium aliquam cupiditate quisquam, repellendus sunt placeat dicta eaque? Rem, odio ipsam. Repudiandae aliquam quaerat porro nesciunt iste ad molestias in quas, impedit, repellat doloremque ullam pariatur. Deserunt eaque, mollitia quae incidunt placeat optio cumque, atque quidem aut tempora at accusamus corporis commodi dolor. Nemo numquam sequi odit beatae dolorum modi mollitia! Quis, necessitatibus mollitia? Expedita sed ea officia quidem cupiditate corrupti aspernatur omnis doloremque. Consequuntur architecto quibusdam animi asperiores magnam voluptatum amet, sequi provident reiciendis eaque in a minima corporis veritatis maiores! Ducimus velit ab eaque provident itaque laborum delectus eveniet deleniti suscipit quo voluptates, voluptas tempora voluptatibus earum minus eligendi quibusdam impedit repellat at atque ex possimus. Et quisquam obcaecati esse aliquam, soluta eaque ad quo recusandae ex omnis dolorem. Cupiditate mollitia, ea harum eum doloremque nisi sequi, sunt fugiat maxime dolore architecto fuga sit, distinctio dolor obcaecati sint ratione amet nihil facilis corrupti accusamus iusto quae tempore et. Totam officiis, sequi voluptatum alias explicabo nihil nesciunt similique! Officiis rem et illum itaque amet consequatur voluptates, sint rerum veritatis debitis deleniti! Similique aliquam autem qui pariatur obcaecati, reiciendis quos quae illum rem saepe atque officiis praesentium earum ex consectetur? Est corporis atque ad quisquam vero sapiente beatae modi ipsa consequuntur porro libero nisi minima laborum, itaque nemo! Perspiciatis recusandae iste sint aspernatur fuga dignissimos, nesciunt maiores facere eveniet perferendis ex quibusdam earum necessitatibus voluptate odio culpa sequi dolorum voluptatum quas blanditiis. Laborum veniam, cumque nisi, architecto obcaecati iste soluta ratione quisquam saepe doloremque magni voluptatem minus nam asperiores? Quos, in odit distinctio inventore eum, ratione omnis adipisci ipsam qui molestiae repudiandae hic. Tempore eveniet laboriosam earum reprehenderit vero? Vitae ipsa similique voluptas unde dolor, saepe nulla? Amet, praesentium nobis, quibusdam quae rem molestias voluptatum aliquam eveniet fuga repellat nesciunt, tempora molestiae architecto sapiente non? Accusamus dolore tempora eum iure, laudantium officia deserunt, omnis fugiat consequatur pariatur eveniet labore officiis. Quo nobis, ducimus officiis quia itaque assumenda numquam!',
+    email: '',
+  },
 })
 
 const message = ref('')
@@ -84,10 +89,17 @@ $transition-modal: 0.3s;
     position: relative;
     width: 100%;
     max-width: 800px;
+    max-height: calc(var(--doc-height) - 2 * var(--gap-lg));
     background-color: var(--color-background);
     border-radius: var(--border-radius-lg);
     padding: var(--gap-lg);
+    overflow-y: auto;
     transition: background-color $transition-theme;
+
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     &__title {
       font-family: var(--font-family-secondary);
