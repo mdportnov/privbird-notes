@@ -13,8 +13,6 @@ class ApiException(APIException, ApiResponse):
     Data transfer object for error messages sent by API to the client
     """
 
-    error: Optional[ValidationError] = None
-
     def __init__(self):
         APIException.__init__(self)
         ApiResponse.__init__(self)

@@ -16,7 +16,7 @@ def exception_handler(exception, context) -> JsonResponse:
         exception: ApiException
         return exception.as_json_response()
     if isinstance(exception, ValidationError):
-        return ValidationException(exception.detail).as_json_response()
+        return ValidationException(exception).as_json_response()
     if isinstance(exception, ParseException):
         return ParseException().as_json_response()
     return UnexpectedException().as_json_response()

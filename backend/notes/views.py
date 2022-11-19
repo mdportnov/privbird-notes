@@ -61,8 +61,6 @@ class CreateNoteView(APIView):
         ## Options
         `options.network` defines the network over which this note will be transmitted.
 
-        `options.language` defines the language of email messages.
-
         `options.expires` defines the time after which the note will be deleted if no one reads it.
 
         `options.email` (optional) defines the email address to which messages about reading the note will be sent.
