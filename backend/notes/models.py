@@ -4,6 +4,7 @@ import secrets
 
 from django.contrib.auth.hashers import check_password, make_password
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from notes.dto.exceptions.InvalidPassword import InvalidPasswordException
@@ -165,9 +166,15 @@ class Note(models.Model):
         """
         Send email notification if needed
         """
-        from notes.tasks import notify
         if is_real and self.real_notification or not is_real and self.fake_notification:
-            notify(self, is_real, is_destroyed)
+            from notes.tasks import notify
+            message: str = _('The {real} note with ID {id} has just been read, {ending}.').format(
+                real='' if is_real else _('fake'),
+                id=self.slug,
+                ending=_('the content was destroyed') if is_destroyed
+                else _('the next time someone reads it, a fake note will be displayed')
+            ).strip().capitalize()
+            notify.delay(email=self.email, message=message)
 
     def __str__(self) -> str:
         return f'Note {self.slug}'
