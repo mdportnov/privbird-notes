@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import secrets
+from typing import Optional
 
+from cryptography.fernet import InvalidToken
 from django.contrib.auth.hashers import check_password, make_password
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -10,7 +12,7 @@ from rest_framework import serializers
 from notes.dto.exceptions.InvalidPassword import InvalidPasswordException
 from notes.utils.Constants import Constants
 from notes.utils.crypto import decrypt, encrypt
-from notes.utils.slug import generate_slug
+from notes.utils.generators import generate_key, generate_slug
 
 
 class Note(models.Model):
@@ -18,6 +20,9 @@ class Note(models.Model):
         HTTPS = 'HTTPS'
         TOR = 'TOR'
         I2P = 'I2P'
+
+    # Encryption key, if password is not set
+    key: Optional[str] = None
 
     # Real content
     real_content = models.TextField(max_length=Constants.MAX_CONTENT_LENGTH, null=True)
@@ -78,89 +83,94 @@ class Note(models.Model):
             self.__encrypt_fake_data()
         super(Note, self).save(force_insert, force_update, using, update_fields)
 
-    def get_raw_content(self) -> str:
+    def get_content(self, key: str) -> str:
         """
-        Get Note content without decryption and destroy Note when needed
+        Decrypt and return Note content
         """
-        is_real = self.real_content is not None
-        content = self.__get_content(is_real)
-        is_destroyed = self.real_content is None and self.fake_content is None
-        if is_destroyed:
-            self.delete()
-        self.__notify_if_needed(is_real=is_real, is_destroyed=is_destroyed)
-        return content
-
-    def get_decrypted_content(self, password: str) -> str:
-        """
-        Decrypt Note content and destroy Note if password differs or fake content was read
-        """
-        content = self.__get_encrypted_content(password)
-        return decrypt(password, self.salt, content)
+        content = self.__get_encrypted_content(key)
+        salt = self.salt
+        try:
+            return decrypt(key, salt, content)
+        except InvalidToken:
+            raise InvalidPasswordException()
 
     def __generate_values(self):
         """
         Generate auto generated Note values before save
         """
         self.slug = generate_slug()
-        if self.real_password or self.fake_password:
-            self.salt = secrets.token_hex()[:Constants.SALT_LENGTH]
+        self.salt = secrets.token_hex()[:Constants.SALT_LENGTH]
+        if self.real_password is None or (self.fake_content and self.fake_password is None):
+            self.key = generate_key()
 
     def __encrypt_note_data(self):
         """
         Encrypt real Note content before save
         """
+        key = self.real_password if self.real_password else self.key
+        self.real_content = encrypt(key, self.salt, self.real_content)
         if self.real_password:
-            self.real_content = encrypt(self.real_password, self.salt, self.real_content)
             self.real_password = make_password(self.real_password, self.salt, Constants.HASHER)
 
     def __encrypt_fake_data(self):
         """
         Encrypt fake Note content before save
         """
+        if self.fake_content:
+            key = self.fake_password if self.fake_password else self.key
+            self.fake_content = encrypt(key, self.salt, self.fake_content)
         if self.fake_password:
-            self.fake_content = encrypt(self.fake_password, self.salt, self.fake_content)
             self.fake_password = make_password(self.fake_password, self.salt, Constants.HASHER)
 
-    def __get_content_same_passwords(self) -> str:
+    def __is_password(self, key: str) -> bool:
         """
-        Get Note content when real and fake passwords are equal and destroy Note when needed
+        Check if key is password
         """
-        return self.get_raw_content()
+        if self.real_password and check_password(key, self.real_password):
+            return True
+        if self.fake_password and check_password(key, self.fake_password):
+            return True
+        return False
 
-    def __get_content_different_passwords(self, is_real: bool) -> str:
+    def __get_encrypted_content(self, key: str) -> str:
         """
-        Get Note content when real and fake passwords are not equal abd destroy Note
+        Return encrypted content and destroy it
         """
-        content = self.__get_content(is_real)
-        self.delete()
-        self.__notify_if_needed(is_real=is_real, is_destroyed=True)
-        return content
+        if self.real_content and self.real_password and check_password(key, self.real_password):
+            return self.__get_real_content()
+        if self.fake_content and self.fake_password and check_password(key, self.fake_password):
+            return self.__get_fake_content()
+        return self.__get_real_content() if self.real_content else self.__get_fake_content()
 
-    def __get_content(self, is_real: bool) -> str:
+    def __get_real_content(self) -> str:
         """
-        Get Note content and make content None
+        Return real content and destroy it
         """
-        content = self.real_content if is_real else self.fake_content
-        if is_real:
-            self.real_password = None
+        content = self.real_content
+        is_destroyed = False
+        if self.fake_content and self.real_password == self.fake_password:
             self.real_content = None
+            self.save()
         else:
-            self.fake_password = None
-            self.fake_content = None
-        self.save()
+            self.delete()
+            is_destroyed = True
+        self.__notify_if_needed(is_real=True, is_destroyed=is_destroyed)
         return content
 
-    def __get_encrypted_content(self, password: str) -> str:
+    def __get_fake_content(self) -> str:
         """
-        Get encrypted Note content and destroy Note if password differs or fake content was read
+        Return fake content and destroy it
         """
-        real = self.real_password and check_password(password, self.real_password)
-        fake = self.fake_password and check_password(password, self.fake_password)
-        if real and fake:
-            return self.__get_content_same_passwords()
-        elif real or fake:
-            return self.__get_content_different_passwords(is_real=real)
-        raise InvalidPasswordException()
+        content = self.fake_content
+        is_destroyed = False
+        if self.real_content and self.real_password == self.fake_password:
+            self.fake_content = None
+            self.save()
+        else:
+            self.delete()
+            is_destroyed = True
+        self.__notify_if_needed(is_real=False, is_destroyed=is_destroyed)
+        return content
 
     def __notify_if_needed(self, is_real: bool, is_destroyed: bool):
         """

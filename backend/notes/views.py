@@ -69,8 +69,8 @@ class CreateNoteView(APIView):
 
         note_request = self.get_note_request(request)
         note = note_request.validate_and_save()
-        message = NoteCreatedMessage(note.slug)
-        return message.as_json_response()
+        slug = f'{note.slug}-{note.key}' if note.key else note.slug
+        return NoteCreatedMessage(slug).as_json_response()
 
 
 class NoteView(APIView):
@@ -87,7 +87,7 @@ class NoteView(APIView):
         return Note.objects.get(slug=slug)
 
     @staticmethod
-    def get_content_by_slug(slug: str) -> str:
+    def get_content_by_slug_and_key(slug: str, key: str) -> str:
         """
         Read Note content, when real_password and fake_password are both None
         """
@@ -95,7 +95,7 @@ class NoteView(APIView):
         note = NoteView.find_by_slug(slug)
         if note.real_password or note.fake_password:
             raise PasswordRequiredException()
-        return note.get_raw_content()
+        return note.get_content(key)
 
     @staticmethod
     def get_content_by_slug_and_password(slug: str, password: str) -> str:
@@ -104,21 +104,20 @@ class NoteView(APIView):
         """
 
         note = NoteView.find_by_slug(slug)
-        return note.get_decrypted_content(password)
+        return note.get_content(password)
 
     @swagger_auto_schema(
         operation_id='note_get_without_password',
         responses={status.HTTP_200_OK: NoteRetrievedMessage.api_schema()}
     )
-    def get(self, request: Request, slug: str) -> JsonResponse:
+    def get(self, request: Request, slug: str, key: str = '') -> JsonResponse:
         """
         # Get note by slug without password
         The content of the note will be destroyed.
         - If there is no fake content, the note will be destroyed after the first reading.
         - If there is fake content, it will be returned next time and the note will also be destroyed.
         """
-
-        content = NoteView.get_content_by_slug(slug)
+        content = NoteView.get_content_by_slug_and_key(slug, key)
         return NoteRetrievedMessage(content).as_json_response()
 
     @swagger_auto_schema(

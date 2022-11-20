@@ -9,3 +9,7 @@ def generate_slug() -> str:
     while Note.objects.filter(slug=slug).exists():
         slug = token_hex()[:Constants.SLUG_LENGTH]
     return slug
+
+
+def generate_key() -> str:
+    return token_hex()[:Constants.KEY_LENGTH]
