@@ -9,16 +9,11 @@ import 'element-plus/es/components/loading/style/css'
 import AMessageModal from '@/components/message/AMessageModal.vue'
 
 const router = useRouter()
-
-const needPassword = ref(false)
+const { slug, key } = router.currentRoute.value.params as { slug: string; key?: string }
+const needPassword = !key
 
 const store = useNoteStore()
-onBeforeMount(async () => {
-  const res = await store.fetch(router.currentRoute.value.params.slug as string)
-  if (res.error?.statusCode === 403) {
-    needPassword.value = true
-  }
-})
+onBeforeMount(() => !needPassword && store.fetch(`${slug}/${key}`))
 
 const error = ref('')
 const showError = ref(false)

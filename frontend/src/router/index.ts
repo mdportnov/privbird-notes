@@ -43,6 +43,11 @@ export const router = createRouter({
           name: 'note',
           component: NotePage,
         },
+        {
+          path: ':slug/:key',
+          name: 'note-secret',
+          component: NotePage,
+        },
       ],
       meta: {
         label: 'notes',
