@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&display=swap');
+
+@font-face {
+  font-family: 'Aristotelica';
+  src: url('../assets/fonts/AristotelicaProDisplay-Regular.woff2');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Aristotelica';
+  src: url('../assets/fonts/AristotelicaProDisplay-Demibold.woff2');
+  font-weight: 600;
+}
+
+body {
+  --font-family-primary: Manrope, sans-serif;
+  --font-family-secondary: Aristotelica, sans-serif;
+}

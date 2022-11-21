@@ -12,6 +12,12 @@ docker-compose -f .\docker-compose.yml up --build -d
 docker-compose -f .\docker-compose.prod.yml up --build -d
 ```
 
+## Run tests
+
+```bash
+python manage.py test
+```
+
 ## Services
 
 ### OpenAPI
@@ -28,3 +34,4 @@ docker-compose -f .\docker-compose.prod.yml up --build -d
 > Credentials are configured in `.env` files
 
 - /admin/ - Django admin panel
+- /rosetta/ - Rosetta translation interface (authorization via admin panel required)

@@ -10,9 +10,9 @@ import privbird.utils.handlers
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="Snippets API",
+        title="PrivBird API",
         default_version='v1',
-        description="Test description",
+        description="Service for sharing encrypted notes",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email="contact@snippets.local"),
         license=openapi.License(name="BSD License"),
@@ -22,9 +22,10 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-  path('admin/', admin.site.urls),
-  path('api/notes/', include('notes.urls')),
-  path('api/feedbacks/', include('feedbacks.urls'))
+    path('admin/', admin.site.urls),
+    path('rosetta/', include('rosetta.urls')),
+    path('api/notes/', include('notes.urls')),
+    path('api/feedbacks/', include('feedbacks.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:

@@ -1,25 +1,23 @@
 from celery import shared_task
+from celery.beat import logger
 from django.core.mail import send_mail
 from django.utils.timezone import now
+from django.utils.translation import gettext_lazy as _
 
 from notes.models import Note
-from notes.utils.EmailNotification import EmailNotification
 from privbird import settings
+from privbird.celery import app
 
 
-def notify(note: Note, is_real: bool, is_destroyed: bool):
-    message = EmailNotification.build(is_real, is_destroyed, note.slug)
-
-    subject = EmailNotification.subject.en
-    content = message.en
-    if note.language == Note.Language.RU:
-        subject = EmailNotification.subject.ru
-        content = message.ru
-
+@app.task
+def notify(email: str, message: str):
+    logger.info(f'Send email notification for {email}')
     send_mail(
-        subject, content,
-        settings.EMAIL_HOST_USER,
-        [note.email], fail_silently=False,
+        subject=_('PrivBird notification'),
+        message=message,
+        from_email=settings.EMAIL_HOST_USER,
+        recipient_list=[email],
+        fail_silently=False,
     )
 
 
