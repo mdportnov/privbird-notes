@@ -1,8 +1,7 @@
 import traceback
 
-from cryptography.fernet import InvalidToken
 from django.http import JsonResponse
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import APIException, ValidationError
 
 from privbird.dto.exceptions.ApiException import ApiException
 from privbird.dto.exceptions.ParseException import ParseException
@@ -18,7 +17,7 @@ def exception_handler(exception, context) -> JsonResponse:
         return exception.as_json_response()
     if isinstance(exception, ValidationError):
         return ValidationException(exception).as_json_response()
-    if isinstance(exception, ParseException) or isinstance(exception, TypeError):
+    if isinstance(exception, APIException):
         return ParseException().as_json_response()
     return UnexpectedException().as_json_response()
 
