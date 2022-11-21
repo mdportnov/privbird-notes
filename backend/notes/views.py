@@ -71,7 +71,7 @@ class CreateNoteView(APIView):
 
         note_request: CreateNoteRequest = get_validated_data(NoteRequestSerializer, request.data)
         note = note_request.validate_and_save()
-        slug = f'{note.slug}-{note.key}' if note.key else note.slug
+        slug = f'{note.slug}/{note.key}' if note.key else note.slug
         return NoteCreatedMessage(slug).as_json_response()
 
 

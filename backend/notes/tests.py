@@ -120,17 +120,17 @@ class NoteKeyTestCase(TestCase):
     def test_wrong_slug(self):
         request = generate_note_request()
         _, slug_key = create(request)
-        slug, key = slug_key.split('-')
+        slug, key = slug_key.split('/')
         slug = '0' * len(slug)
-        code, _ = self.read(f'{slug}-{key}')
+        code, _ = self.read(f'{slug}/{key}')
         self.assertEqual(code, status.HTTP_404_NOT_FOUND)
 
     def test_wrong_key(self):
         request = generate_note_request()
         _, slug_key = create(request)
-        slug, key = slug_key.split('-')
+        slug, key = slug_key.split('/')
         key = '0' * len(slug)
-        code, _ = self.read(f'{slug}-{key}')
+        code, _ = self.read(f'{slug}/{key}')
         self.assertEqual(code, status.HTTP_403_FORBIDDEN)
 
     def test_read_real_twice(self):
