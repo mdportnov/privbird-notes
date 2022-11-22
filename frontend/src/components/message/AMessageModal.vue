@@ -46,7 +46,7 @@ useEscape(close)
   </teleport>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 $transition-modal: 0.3s;
 .a-message-modal {
   position: fixed;

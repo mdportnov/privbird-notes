@@ -47,7 +47,7 @@ const isDesktop = useMinWidth('md')
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .a-menu {
   width: 325px;
   border-radius: var(--border-radius-lg);

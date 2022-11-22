@@ -29,7 +29,7 @@ const close = async () => {
   </transition>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 $transition-closable: 0.4s;
 
 .a-closable-message {

@@ -14,7 +14,7 @@ const { value, error, onBlur } = useField(props)
   </el-form-item>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .el-form-item {
   @mixin input-inner {
     padding: 12px 16px;
@@ -34,7 +34,7 @@ const { value, error, onBlur } = useField(props)
   }
 
   .a-input {
-    &:deep(.el-input__wrapper) {
+    .el-input__wrapper {
       @include input-inner();
 
       .el-input__inner {
@@ -42,7 +42,7 @@ const { value, error, onBlur } = useField(props)
       }
     }
 
-    &:deep(.el-textarea__inner) {
+    .el-textarea__inner {
       @include input-inner();
       @include input();
       transition: background-color $transition-theme, color $transition-theme;

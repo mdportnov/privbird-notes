@@ -52,7 +52,7 @@ const isDesktop = useMinWidth('md')
   </header>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .a-navbar {
   --navbar-height: 120px;
   --logo-text-offset: calc(var(--navbar-height) / 4);

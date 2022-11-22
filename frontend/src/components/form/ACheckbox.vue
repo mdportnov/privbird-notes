@@ -15,10 +15,10 @@ const { value, error, onBlur } = useField(props)
   </el-form-item>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .el-form-item {
   .a-checkbox {
-    &:deep(.el-checkbox__input) {
+    .el-checkbox__input {
       border-radius: 2px;
       transition: box-shadow $transition-theme;
 
@@ -37,7 +37,7 @@ const { value, error, onBlur } = useField(props)
       }
     }
 
-    &:deep(.el-checkbox__label) {
+    .el-checkbox__label {
       font-size: 16px;
       font-weight: 400;
       color: var(--color-text);
@@ -52,7 +52,7 @@ const { value, error, onBlur } = useField(props)
   }
 
   &.is-error {
-    &:deep(.el-checkbox__input) {
+    .el-checkbox__input {
       box-shadow: 0 0 2px 2px var(--color-error) !important;
     }
   }

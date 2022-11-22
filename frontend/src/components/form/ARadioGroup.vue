@@ -22,7 +22,7 @@ const { value, error, onBlur } = useField(props)
   </el-form-item>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .el-form-item {
   .a-radio-group {
     width: 100%;
