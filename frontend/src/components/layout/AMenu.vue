@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ILocale } from '@/models/i18n/locale'
 import { useThemeStore } from '@/stores/theme'
 import { useMinWidth } from '@/utils/mediaQuery'
 import { useMenu } from '@/utils/menu'
@@ -9,7 +10,7 @@ import ITheme from '../icons/ITheme.vue'
 
 const emit = defineEmits<{
   (e: 'close'): void
-}>()  
+}>()
 
 const links = useMenu()
 
@@ -17,7 +18,7 @@ const i18n = useI18n()
 const themeStore = useThemeStore()
 
 const toggleLocale = () => {
-  i18n.locale.value = i18n.locale.value === 'en' ? 'ru' : 'en'
+  i18n.locale.value = i18n.locale.value === ILocale.EN ? ILocale.RU : ILocale.EN
 }
 
 const isDesktop = useMinWidth('md')
