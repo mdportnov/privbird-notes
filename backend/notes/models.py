@@ -4,7 +4,7 @@ import secrets
 from typing import Optional
 
 from cryptography.fernet import InvalidToken
-from django.contrib.auth.hashers import check_password, make_password
+from django.contrib.auth.hashers import make_password
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -85,12 +85,10 @@ class Note(models.Model):
 
     def get_content(self, key: str) -> str:
         """
-        Decrypt and return Note content
+        Decrypt and return content
         """
-        content = self.__get_encrypted_content(key)
-        salt = self.salt
         try:
-            return decrypt(key, salt, content)
+            return self.__decrypt_content(key)
         except InvalidToken:
             raise InvalidPasswordException()
 
@@ -122,31 +120,21 @@ class Note(models.Model):
         if self.fake_password:
             self.fake_password = make_password(self.fake_password, self.salt, Constants.HASHER)
 
-    def __is_password(self, key: str) -> bool:
+    def __decrypt_content(self, key: str) -> str:
         """
-        Check if key is password
+        Return decrypted content and destroy it
         """
-        if self.real_password and check_password(key, self.real_password):
-            return True
-        if self.fake_password and check_password(key, self.fake_password):
-            return True
-        return False
+        if self.real_content and self.real_password:
+            return self.__get_real_content(key)
+        if self.fake_content and self.fake_password:
+            return self.__get_fake_content(key)
+        return self.__get_real_content(key) if self.real_content else self.__get_fake_content(key)
 
-    def __get_encrypted_content(self, key: str) -> str:
+    def __get_real_content(self, key: str) -> str:
         """
-        Return encrypted content and destroy it
+        Return decrypted real content and destroy it
         """
-        if self.real_content and self.real_password and check_password(key, self.real_password):
-            return self.__get_real_content()
-        if self.fake_content and self.fake_password and check_password(key, self.fake_password):
-            return self.__get_fake_content()
-        return self.__get_real_content() if self.real_content else self.__get_fake_content()
-
-    def __get_real_content(self) -> str:
-        """
-        Return real content and destroy it
-        """
-        content = self.real_content
+        content = decrypt(key, self.salt, self.real_content)
         is_destroyed = False
         if self.fake_content and self.real_password == self.fake_password:
             self.real_content = None
@@ -157,11 +145,11 @@ class Note(models.Model):
         self.__notify_if_needed(is_real=True, is_destroyed=is_destroyed)
         return content
 
-    def __get_fake_content(self) -> str:
+    def __get_fake_content(self, key: str) -> str:
         """
         Return fake content and destroy it
         """
-        content = self.fake_content
+        content = decrypt(key, self.salt, self.fake_content)
         is_destroyed = False
         if self.real_content and self.real_password == self.fake_password:
             self.fake_content = None
