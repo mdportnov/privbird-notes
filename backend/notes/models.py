@@ -4,7 +4,7 @@ import secrets
 from typing import Optional
 
 from cryptography.fernet import InvalidToken
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import check_password, make_password
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -124,9 +124,9 @@ class Note(models.Model):
         """
         Return decrypted content and destroy it
         """
-        if self.real_content and self.real_password:
+        if self.real_content and self.real_password and check_password(key, self.real_password):
             return self.__get_real_content(key)
-        if self.fake_content and self.fake_password:
+        if self.fake_content and self.fake_password and check_password(key, self.fake_password):
             return self.__get_fake_content(key)
         return self.__get_real_content(key) if self.real_content else self.__get_fake_content(key)
 
