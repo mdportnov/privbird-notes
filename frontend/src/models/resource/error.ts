@@ -14,7 +14,7 @@ export namespace IResourceError {
       statusCode: err.response?.status,
       message:
         (err.response?.data as IApiError)?.message ||
-        errorLocales[getLocale()]['EUNEXPECTED'],
+        errorLocales[getLocale()][err.message === 'ETIMEDOUT' ? err.message : 'EUNEXPECTED'],
       original: err,
     }
   }
