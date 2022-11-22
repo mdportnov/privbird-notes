@@ -15,7 +15,7 @@ const loading = ref(true)
 
 const store = useNoteStore()
 onBeforeMount(async () => {
-  await store.fetch(`${slug}/${key}`)
+  await store.fetch(slug + (key ? `/${key}` : ''))
   loading.value = false
 })
 
