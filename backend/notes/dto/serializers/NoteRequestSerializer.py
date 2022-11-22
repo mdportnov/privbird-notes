@@ -1,5 +1,3 @@
-from typing import Dict
-
 from drf_yasg.openapi import Schema, TYPE_OBJECT
 from rest_framework import serializers
 

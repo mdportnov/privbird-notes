@@ -4,8 +4,8 @@ from rest_framework import generics, status
 from rest_framework.request import Request
 
 from feedbacks.dto.messages.FeedbackCreated import FeedbackCreatedMessage
-from feedbacks.models import Feedback
 from feedbacks.dto.serializers.CreateFeedbackSerializer import CreateFeedbackSerializer
+from feedbacks.models import Feedback
 from privbird.dto.messages.ApiMessage import ApiMessage
 
 
