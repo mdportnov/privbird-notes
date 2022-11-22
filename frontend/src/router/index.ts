@@ -11,6 +11,7 @@ import NotFoundPage from '@/pages/NotFound/NotFoundPage.vue'
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior: () => ({ top: 0, behavior: 'smooth' }),
   routes: [
     {
       path: '/',
