@@ -5,7 +5,8 @@ export const validationLocales = {
       required: 'This field is required',
       passIdentical: 'Passwords must match',
       email: 'The entered value must be an email',
-      max: 'The text of the note should not exceed {param} characters',
+      max: 'The text of the field should not exceed {param} characters',
+      maxNote: 'The text of the note should not exceed {param} characters',
     },
   },
   ru: {
@@ -14,7 +15,8 @@ export const validationLocales = {
       required: 'Это поле обязательно для ввода',
       passIdentical: 'Пароли должны совпадать',
       email: 'Введенное значение должно быть электронной почтой',
-      max: 'Текст записки не должен превышать {param} символов',
+      max: 'Текст поля не должен превышать {param} символов',
+      maxNote: 'Текст записки не должен превышать {param} символов',
     },
   },
 }

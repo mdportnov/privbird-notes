@@ -8,12 +8,13 @@ import { validationLocales } from './validation'
 import { supportPageLocales } from './pages/support'
 import { privacyPageLocales } from './pages/privacy'
 import { notFoundPageLocales } from './pages/notFound'
+import { ILocale } from '@/models/i18n/locale'
 
 export const i18nConf = {
   legacy: false,
   warnHtmlInMessage: 'off',
-  locale: 'en',
-  fallbackLocale: 'ru',
+  locale: ILocale.EN,
+  fallbackLocale: ILocale.RU,
   messages: {
     en: {
       pages: {

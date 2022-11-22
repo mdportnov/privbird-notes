@@ -18,7 +18,7 @@ defineProps<{
   </component>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .a-form-caption {
   font-weight: 600;
   font-size: 20px;

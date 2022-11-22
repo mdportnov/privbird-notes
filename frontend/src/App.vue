@@ -6,12 +6,10 @@ import ASpacer from './components/ASpacer.vue'
 import { useDocHeight } from './utils/docHeight'
 import { useI18nStorage } from './utils/i18n'
 import { useValidationLocale } from './utils/form'
-import { useScrollOnRoute } from './utils/router'
 
 useDocHeight()
 useI18nStorage()
 useValidationLocale()
-useScrollOnRoute()
 </script>
 
 <template>

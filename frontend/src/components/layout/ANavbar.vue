@@ -10,6 +10,7 @@ import ABtn from '../ABtn.vue'
 import AMenu from './AMenu.vue'
 import AContext from '../AContext.vue'
 import { useMinWidth } from '@/utils/mediaQuery'
+import { ILocale } from '@/models/i18n/locale'
 
 const i18n = useI18n()
 const route = useRoute()
@@ -17,7 +18,7 @@ const route = useRoute()
 const themeStore = useThemeStore()
 
 const toggleLocale = () => {
-  i18n.locale.value = i18n.locale.value === 'en' ? 'ru' : 'en'
+  i18n.locale.value = i18n.locale.value === ILocale.EN ? ILocale.RU : ILocale.EN
 }
 
 const pageName = computed(() => (route.meta.label && i18n.t(`pages.${route.meta.label}`)) as Optional<string>)
@@ -51,7 +52,7 @@ const isDesktop = useMinWidth('md')
   </header>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .a-navbar {
   --navbar-height: 120px;
   --logo-text-offset: calc(var(--navbar-height) / 4);
