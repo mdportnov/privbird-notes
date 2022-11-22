@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import NotePageSecurity from './Security/NotePageSecurity.vue'
 import NotePageContent from './Content/NotePageContent.vue'
 import { useNoteStore } from '@/stores/note'
 import { useRouter } from 'vue-router'
@@ -6,7 +7,6 @@ import { onBeforeMount, ref } from 'vue'
 import { vLoading } from 'element-plus'
 import 'element-plus/es/components/loading/style/css'
 import AMessageModal from '@/components/message/AMessageModal.vue'
-const NotePageSecurity = () => import('./Security/NotePageSecurity.vue')
 
 const router = useRouter()
 const { slug, key } = router.currentRoute.value.params as { slug: string; key?: string }
