@@ -1,7 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
 
-from django.core.exceptions import ValidationError
 from rest_framework.exceptions import APIException
 
 from privbird.dto.ApiResponse import ApiResponse
