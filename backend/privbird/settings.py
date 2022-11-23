@@ -89,11 +89,18 @@ REDIS_LOCATION = 'redis://{host}:6379/'.format(
     host=getenv('REDIS_HOST', 'localhost')
 )
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': REDIS_LOCATION + '/1',
+    }
+}
+
 # RestFramework
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'privbird.utils.handlers.exception_handler',
     'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle'
+        'privbird.utils.throttle.RateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
         'anon': '10/minute' if not TEST else None
