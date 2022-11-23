@@ -1,3 +1,4 @@
+import sys
 from os import getenv
 from pathlib import Path
 
@@ -8,6 +9,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DEBUG = int(getenv('DJANGO_DEBUG', 1))
+
+TEST = len(sys.argv) > 1 and sys.argv[1] == 'test'
 
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
@@ -93,7 +96,7 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.AnonRateThrottle'
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '10/minute'
+        'anon': '10/minute' if not TEST else None
     }
 }
 
