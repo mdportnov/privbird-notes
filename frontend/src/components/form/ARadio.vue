@@ -14,7 +14,7 @@ defineProps<{
   </el-radio>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .a-radio {
   height: auto;
   width: 100%;
@@ -32,7 +32,7 @@ defineProps<{
   --el-radio-input-width: #{$indicator-size};
   --el-radio-input-height: #{$indicator-size};
 
-  &:deep(.el-radio__inner) {
+  .el-radio__inner {
     &::after {
       $size: calc(4 / 9 * $indicator-size);
       width: $size;
@@ -40,7 +40,7 @@ defineProps<{
     }
   }
 
-  &:deep(.el-radio__label) {
+  .el-radio__label {
     padding: 0;
   }
 

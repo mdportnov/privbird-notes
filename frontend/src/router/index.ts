@@ -1,16 +1,17 @@
 import { createRouter, createWebHistory, RouterView } from 'vue-router'
 
-import HomePage from '@/pages/Home/HomePage.vue'
-import NoteCreatePage from '@/pages/NoteCreate/NoteCreatePage.vue'
-import NoteCreateDonePage from '@/pages/NoteCreate/NoteCreateDonePage.vue'
-import NotePage from '@/pages/Note/NotePage.vue'
-import AboutPage from '@/pages/About/AboutPage.vue'
-import FAQPage from '@/pages/FAQ/FAQPage.vue'
-import PrivacyPage from '@/pages/Privacy/PrivacyPage.vue'
-import NotFoundPage from '@/pages/NotFound/NotFoundPage.vue'
+const HomePage = () => import('@/pages/Home/HomePage.vue')
+const NoteCreatePage = () => import('@/pages/NoteCreate/NoteCreatePage.vue')
+const NoteCreateDonePage = () => import('@/pages/NoteCreate/NoteCreateDonePage.vue')
+const NotePage = () => import('@/pages/Note/NotePage.vue')
+const AboutPage = () => import('@/pages/About/AboutPage.vue')
+const FAQPage = () => import('@/pages/FAQ/FAQPage.vue')
+const PrivacyPage = () => import('@/pages/Privacy/PrivacyPage.vue')
+const NotFoundPage = () => import('@/pages/NotFound/NotFoundPage.vue')
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  scrollBehavior: () => ({ top: 0, behavior: 'smooth' }),
   routes: [
     {
       path: '/',
@@ -41,6 +42,11 @@ export const router = createRouter({
         {
           path: ':slug',
           name: 'note',
+          component: NotePage,
+        },
+        {
+          path: ':slug/:key',
+          name: 'note-secret',
           component: NotePage,
         },
       ],

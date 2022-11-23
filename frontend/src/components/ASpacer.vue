@@ -4,7 +4,7 @@
   <div class="a-spacer"></div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .a-spacer {
   flex-basis: 100%;
 }

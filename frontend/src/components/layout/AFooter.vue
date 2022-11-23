@@ -23,7 +23,7 @@ const showSupport = ref(false)
   <support-page v-model:show="showSupport" />
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .a-footer {
   display: flex;
   flex-wrap: wrap;

@@ -17,12 +17,12 @@ const emit = defineEmits<{
     :class="{ 'a-expand-btn--expanded': expand }"
     type="button"
   >
-    <i-arrow-bottom class="a-expand-btn__expand-icon part-1" />
-    <i-arrow-bottom class="a-expand-btn__expand-icon part-2" />
+    <i-arrow-bottom class="a-expand-btn__expand-icon a-expand-btn__expand-icon--part-1" />
+    <i-arrow-bottom class="a-expand-btn__expand-icon a-expand-btn__expand-icon--part-2" />
   </button>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .a-expand-btn {
   $size: 1em;
   width: $size;
@@ -37,22 +37,22 @@ const emit = defineEmits<{
     font-size: 0.5 * $size;
     transition: transform $transition;
 
-    &.part-1 {
+    &--part-1 {
       transform: translateY(50%);
     }
 
-    &.part-2 {
+    &--part-2 {
       transform: translateY(-50%);
     }
   }
 
   &.a-expand-btn--expanded {
     .a-expand-btn__expand-icon {
-      &.part-1 {
+      &--part-1 {
         transform: translateY(22%);
       }
 
-      &.part-2 {
+      &--part-2 {
         transform: translateY(-22%) scaleY(-1);
       }
     }

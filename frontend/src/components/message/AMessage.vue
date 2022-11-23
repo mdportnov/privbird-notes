@@ -14,12 +14,12 @@ const emit = defineEmits<{
 
 <template>
   <div class="a-message" :class="`a-message--${type}`">
-    <button type="button" class="close-btn" @click="emit('close')"><i-close /></button>
+    <button type="button" class="a-message__close-btn" @click="emit('close')"><i-close /></button>
     <slot />
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .a-message {
   position: relative;
   border-radius: var(--border-radius-lg);
@@ -39,7 +39,7 @@ const emit = defineEmits<{
     font-size: 16px;
   }
 
-  .close-btn {
+  &__close-btn {
     position: absolute;
     font-size: 1rem;
     width: 1em;

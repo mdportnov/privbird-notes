@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick } from '@/utils/nextTick'
+import { nextСycle } from '@/utils/nextСycle'
 import { ref } from 'vue'
 
 const props = defineProps<{
@@ -30,7 +30,7 @@ const swap = async (val?: boolean) => {
 
   show.value = newShow
 
-  await nextTick()
+  await nextСycle()
 
   if (show.value) document.addEventListener('click', closeIfOutside)
   else document.removeEventListener('click', closeIfOutside)

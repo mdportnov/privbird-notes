@@ -22,7 +22,7 @@ defineProps<{
   </component>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .a-btn {
   --size: 80px;
   position: relative;
@@ -53,7 +53,7 @@ defineProps<{
     width: var(--size);
     font-size: calc(0.375 * var(--size));
 
-    &:deep(.i-icon) {
+    .i-icon {
       font-size: calc(0.5 * var(--size));
     }
   }
@@ -80,7 +80,7 @@ defineProps<{
     }
   }
 
-  &:deep(.el-progress) {
+  .el-progress {
     position: absolute;
     bottom: 0;
     left: 0;

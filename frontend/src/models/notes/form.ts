@@ -34,8 +34,11 @@ export namespace INoteForm {
     return object().shape(
       {
         note: object({
-          content: string().default('').required().max(40000),
-          password: string().default(''),
+          content: string()
+            .default('')
+            .required()
+            .max(40000, ({ max }) => `maxNote|${max}`),
+          password: string().default('').max(100),
           repeatPassword: string()
             .default('')
             .when('password', { is: (val: string) => !!val, then: string().required() })
@@ -53,9 +56,14 @@ export namespace INoteForm {
           enable: bool(),
           content: string()
             .default('')
-            .when('enable', { is: true, then: string().required().max(40000) }),
+            .when('enable', {
+              is: true,
+              then: string()
+                .required()
+                .max(40000, ({ max }) => `maxNote|${max}`),
+            }),
           enablePassword: bool(),
-          password: string().default('').when('enablePassword', { is: true, then: string().required() }),
+          password: string().default('').max(100).when('enablePassword', { is: true, then: string().required() }),
           repeatPassword: string()
             .default('')
             .when('enablePassword', {
@@ -74,7 +82,7 @@ export namespace INoteForm {
         options: object({
           network: (string() as StringSchema<ENetwork>).default('HTTPS').oneOf([...ENetwork.values]),
           expires: (string() as StringSchema<EExpires>).default('Expires.YEAR').oneOf([...EExpires.values]),
-          email: string().email().default(''),
+          email: string().email().default('').max(256),
         }).when(['note.notification', 'fake.notification'], {
           is: (...values: boolean[]) => values.some((el) => el),
           then: object({ email: string().required() }),

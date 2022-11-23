@@ -25,10 +25,10 @@ const themeStore = useThemeStore()
   </el-form-item>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .el-form-item {
   .a-select {
-    &:deep(.el-input__wrapper) {
+    .el-input__wrapper {
       padding: 12px 16px;
       border-radius: var(--border-radius-md);
       box-shadow: 0 0 0 2px var(--el-input-border-color, var(--el-border-color)) inset;
@@ -44,14 +44,14 @@ const themeStore = useThemeStore()
     }
 
     &:not(&--dark) {
-      &:deep(.el-input__wrapper) {
+      .el-input__wrapper {
         .el-input__inner {
           opacity: 0.8;
         }
       }
     }
 
-    &:deep(.el-input) {
+    .el-input {
       &.is-focus {
         .el-input__wrapper {
           box-shadow: 0 0 0 2px var(--el-select-input-focus-border-color) inset !important;

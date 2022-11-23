@@ -9,15 +9,14 @@ import 'element-plus/es/components/loading/style/css'
 import AMessageModal from '@/components/message/AMessageModal.vue'
 
 const router = useRouter()
+const { slug, key } = router.currentRoute.value.params as { slug: string; key?: string }
 
-const needPassword = ref(false)
+const loading = ref(true)
 
 const store = useNoteStore()
 onBeforeMount(async () => {
-  const res = await store.fetch(router.currentRoute.value.params.slug as string)
-  if (res.error?.statusCode === 403) {
-    needPassword.value = true
-  }
+  await store.fetch(slug + (key ? `/${key}` : ''))
+  loading.value = false
 })
 
 const error = ref('')
@@ -35,9 +34,11 @@ store.$onAction(({ after }) => {
 </script>
 
 <template>
-  <div v-loading.fullscreen.lock="store.note.state.isLoading()" class="note-page">
-    <note-page-security v-if="needPassword && !store.note.data" />
-    <note-page-content v-else-if="store.note.data" :note="store.note.data.content" />
+  <div v-loading.fullscreen.lock="loading" class="note-page">
+    <template v-if="!loading">
+      <note-page-security v-if="!store.note.data" />
+      <note-page-content v-else :note="store.note.data.content" />
+    </template>
     <a-message-modal v-model:show="showError" @close="$router.replace('/notes/create')" type="negative">
       {{ error }}
     </a-message-modal>
