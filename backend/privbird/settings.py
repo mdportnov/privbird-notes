@@ -81,9 +81,20 @@ SWAGGER_SETTINGS = {
     'DEFAULT_MODEL_RENDERING': 'example'
 }
 
+#Cache
+REDIS_LOCATION = 'redis://{host}:6379/'.format(
+    host=getenv('REDIS_HOST', 'localhost')
+)
+
 # RestFramework
 REST_FRAMEWORK = {
-    'EXCEPTION_HANDLER': 'privbird.utils.handlers.exception_handler'
+    'EXCEPTION_HANDLER': 'privbird.utils.handlers.exception_handler',
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '10/minute'
+    }
 }
 
 # Database
@@ -138,7 +149,7 @@ USE_L10N = True
 USE_TZ = True
 
 # Celery
-CELERY_BROKER_URL = getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_BROKER_URL = REDIS_LOCATION + '/0'
 
 # Email server configuration
 EMAIL_BACKEND = getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')

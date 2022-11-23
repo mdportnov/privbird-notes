@@ -31,6 +31,9 @@ msgstr ""
 "There was an error.\n"
 "Try again or contact support!"
 
+msgid "Request limit reached."
+msgstr "Request limit reached."
+
 msgid "The feedback was successfully sent."
 msgstr "The feedback was successfully sent."
 

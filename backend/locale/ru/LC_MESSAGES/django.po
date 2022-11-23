@@ -31,6 +31,9 @@ msgstr ""
 "Произошла ошибка.\n"
 "Попробуйте еще раз или обратитесь в службу поддержки!"
 
+msgid "Request limit reached."
+msgstr "Достигнут лимит запросов."
+
 msgid "The feedback was successfully sent."
 msgstr "Обращение успешно отправлено."
 
