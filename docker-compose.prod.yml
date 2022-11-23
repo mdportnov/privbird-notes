@@ -38,6 +38,10 @@ services:
   redis:
     hostname: redis
     image: redis
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis/data/:/data/
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
   
   frontend:
     build: ./frontend
