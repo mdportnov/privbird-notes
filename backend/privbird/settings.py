@@ -5,7 +5,6 @@ from pathlib import Path
 from django.utils.translation import gettext_lazy as _
 from dotenv import load_dotenv
 
-# Load environment depending on mode
 load_dotenv()
 
 DEBUG = int(getenv('DJANGO_DEBUG', 1))
@@ -84,7 +83,7 @@ SWAGGER_SETTINGS = {
     'DEFAULT_MODEL_RENDERING': 'example'
 }
 
-#Cache
+# Cache
 REDIS_LOCATION = 'redis://{host}:6379/'.format(
     host=getenv('REDIS_HOST', 'localhost')
 )
@@ -92,7 +91,7 @@ REDIS_LOCATION = 'redis://{host}:6379/'.format(
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': REDIS_LOCATION + '/1',
+        'LOCATION': f'{REDIS_LOCATION}/1',
     }
 }
 
@@ -159,7 +158,7 @@ USE_L10N = True
 USE_TZ = True
 
 # Celery
-CELERY_BROKER_URL = REDIS_LOCATION + '/0'
+CELERY_BROKER_URL = f'{REDIS_LOCATION}/0'
 
 # Email server configuration
 EMAIL_BACKEND = getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
