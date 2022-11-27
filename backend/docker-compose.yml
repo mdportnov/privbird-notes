@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  privnote:
+    build: privnote
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.dev
+    depends_on:
+      - mariadb
+      - redis
+
+  # feedback:
+  #   context: feedback
+  #   command: python manage.py runserver 0.0.0.0:8000
+  #   ports:
+  #     - "8001:8000"
+  #   env_file:
+  #     - .env.dev
+
+  mariadb:
+    hostname: mariadb
+    image: mariadb
+    restart: always
+    env_file:
+      - .env.dev
+  
+  redis:
+    hostname: redis
+    image: redis
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis/data/:/data/
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
