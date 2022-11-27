@@ -18,6 +18,6 @@ echo "Create superuser"
 python manage.py createsuperuser --noinput
 
 echo "Compile localized messages"
-django-admin compilemessages --ignore=venv
+django-admin compilemessages --ignore=.venv
 
 exec "$@"

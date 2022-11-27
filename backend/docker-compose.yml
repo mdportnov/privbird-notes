@@ -1,8 +1,8 @@
 version: "3"
 
 services:
-  privnote:
-    build: privnote
+  feedback:
+    build: feedback
     command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
@@ -12,13 +12,16 @@ services:
       - mariadb
       - redis
 
-  # feedback:
-  #   context: feedback
-  #   command: python manage.py runserver 0.0.0.0:8000
-  #   ports:
-  #     - "8001:8000"
-  #   env_file:
-  #     - .env.dev
+  privnote:
+    build: privnote
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8001:8000"
+    env_file:
+      - .env.dev
+    depends_on:
+      - mariadb
+      - redis
 
   mariadb:
     hostname: mariadb
