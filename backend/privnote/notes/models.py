@@ -16,11 +16,6 @@ from notes.utils.generators import generate_key, generate_slug
 
 
 class Note(models.Model):
-    class Network(models.TextChoices):
-        HTTPS = 'HTTPS'
-        TOR = 'TOR'
-        I2P = 'I2P'
-
     # Encryption key, if password is not set
     key: Optional[str] = None
 

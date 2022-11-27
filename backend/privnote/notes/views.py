@@ -98,17 +98,6 @@ class NotePasswordView(APIView):
     serializer_class = PasswordSerializer
 
     @swagger_auto_schema(
-        operation_id='notes_read_without_password',
-        responses={status.HTTP_403_FORBIDDEN: NoteRetrievedMessage.api_schema()}
-    )
-    def get(self, request: Request, slug: str):
-        """
-        # Deprecated route for checking whether note requires password or not
-        """
-        find_note_by_slug(slug)
-        raise PasswordRequiredException()
-
-    @swagger_auto_schema(
         operation_id='notes_read_with_password',
         request_body=PasswordSerializer.api_schema(),
         responses={status.HTTP_200_OK: NoteRetrievedMessage.api_schema()}

@@ -1,10 +1,9 @@
 import traceback
 
 from django.http import JsonResponse
-from rest_framework.exceptions import APIException, ValidationError, Throttled
+from rest_framework.exceptions import APIException, Throttled, ValidationError
 
 from privnote.dto.exceptions.ApiException import ApiException
-from privnote.dto.exceptions.ParseException import ParseException
 from privnote.dto.exceptions.RateLimitException import RateLimitException
 from privnote.dto.exceptions.ResourceNotFoundException import ResourceNotFoundException
 from privnote.dto.exceptions.UnexpectedException import UnexpectedException
@@ -21,7 +20,7 @@ def exception_handler(exception, context) -> JsonResponse:
     if isinstance(exception, Throttled):
         return RateLimitException().as_json_response()
     if isinstance(exception, APIException):
-        return ParseException().as_json_response()
+        return ApiException(message=exception.detail).as_json_response()
     return UnexpectedException().as_json_response()
 
 

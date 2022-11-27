@@ -1,13 +1,13 @@
 from drf_yasg.openapi import Schema, TYPE_OBJECT, TYPE_STRING
 from rest_framework import serializers
 
-from notes.models import Note
 from notes.utils.Constants import Constants
 from notes.utils.Expires import Expires
+from notes.utils.Network import Network
 
 
 class OptionsSerializer(serializers.Serializer):
-    network = serializers.ChoiceField(choices=Note.Network.choices, default=Note.Network.HTTPS)
+    network = serializers.ChoiceField(choices=Network, default=Network.HTTPS)
     expires = serializers.ChoiceField(choices=Expires, default=Expires.YEAR)
     email = serializers.EmailField(max_length=Constants.MAX_EMAIL_LENGTH, allow_null=True, default=None)
 
@@ -19,7 +19,7 @@ class OptionsSerializer(serializers.Serializer):
             properties={
                 'network': Schema(
                     type=TYPE_STRING,
-                    enum=[str(network) for network in Note.Network]
+                    enum=[str(network) for network in Network]
                 ),
                 'expires': Schema(
                     type=TYPE_STRING,

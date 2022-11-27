@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Dict, Optional
 
 from drf_yasg.openapi import Schema, TYPE_OBJECT, TYPE_STRING
 
