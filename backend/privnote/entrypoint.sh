@@ -11,13 +11,10 @@ python manage.py makemigrations
 echo "Apply database migrations"
 python manage.py migrate
 
-echo "Collect static files"
-python manage.py collectstatic --noinput
-
-echo "Create superuser"
-python manage.py createsuperuser --noinput
-
 echo "Compile localized messages"
 django-admin compilemessages --ignore=.venv
+
+echo "Boot gunicorn server"
+gunicorn -c gunicorn.conf.py privnote.wsgi
 
 exec "$@"

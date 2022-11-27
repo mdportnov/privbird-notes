@@ -7,7 +7,7 @@ import privnote.utils.handlers
 
 urlpatterns = [
   path('admin/', admin.site.urls),
-  path('admin/rosetta/', include('rosetta.urls')),
+  path('rosetta/', include('rosetta.urls')),
   path('api/notes/', include('notes.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

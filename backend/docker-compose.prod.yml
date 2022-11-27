@@ -2,23 +2,21 @@ version: "3"
 
 services:
   feedback:
-    build: feedback
-    command: python manage.py runserver 0.0.0.0:8000
-    ports:
-      - "8000:8000"
+    build: ./feedback/
     env_file:
-      - .env.dev
+      - .env.prod
+    volumes:
+      - ./feedback/:/app/
     depends_on:
       - mariadb
       - redis
 
   privnote:
-    build: privnote
-    command: python manage.py runserver 0.0.0.0:8000
-    ports:
-      - "8001:8000"
+    build: ./privnote/
     env_file:
-      - .env.dev
+      - .env.prod
+    volumes:
+      - ./privnote/:/app/
     depends_on:
       - mariadb
       - redis
@@ -29,7 +27,7 @@ services:
     env_file:
         - .env.prod
     depends_on:
-        - backend
+        - privnote
         - redis
 
   mariadb:
@@ -38,6 +36,22 @@ services:
     restart: always
     env_file:
       - .env.dev
+    volumes:
+      - mysql_data:/var/lib/mysql/data/
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./nginx/log/:/var/log/nginx/
+      - ./feedback/static/:/static/
+    depends_on:
+      - feedback
+      - privnote
+    links:
+      - feedback:feedback
+      - privnote:privnote
   
   redis:
     hostname: redis
@@ -46,3 +60,6 @@ services:
     volumes:
       - ./redis/data/:/data/
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+
+volumes:
+  mysql_data:

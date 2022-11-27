@@ -7,7 +7,7 @@ import feedback.utils.handlers
 
 urlpatterns = [
   path('admin/', admin.site.urls),
-  path('admin/rosetta/', include('rosetta.urls')),
+  path('rosetta/', include('rosetta.urls')),
   path('api/feedbacks/', include('feedbacks.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

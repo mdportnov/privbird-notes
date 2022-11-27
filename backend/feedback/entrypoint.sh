@@ -20,4 +20,7 @@ python manage.py createsuperuser --noinput
 echo "Compile localized messages"
 django-admin compilemessages --ignore=.venv
 
+echo "Boot gunicorn server"
+gunicorn -c gunicorn.conf.py feedback.wsgi
+
 exec "$@"
