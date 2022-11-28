@@ -27,7 +27,7 @@ def generate_note_request(
         },
         'options': {
             'network': 'HTTPS',
-            'expires': 'Expires.YEAR',
+            'expires': 'YEAR',
             'email': None
         }
     }
