@@ -41,7 +41,7 @@ const { values, handleSubmit } = useForm<INoteForm>({
     },
     options: {
       network: 'HTTPS',
-      expires: 'Expires.YEAR',
+      expires: 'YEAR',
       email: '',
     },
   },
