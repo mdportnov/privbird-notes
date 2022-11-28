@@ -9,7 +9,7 @@ import axios from 'axios'
 export const NotesService = {
   async create(data: INoteData): Promise<IResource<IRes<INote.Slug>>> {
     try {
-      const res = await $api.post<IRes<INote.Slug>>('/notes/', data)
+      const res = await $api.post<IRes<INote.Slug>>('/privnote/api/notes/', data)
       return { data: res.data }
     } catch (e) {
       if (axios.isAxiosError(e)) {
@@ -21,7 +21,7 @@ export const NotesService = {
 
   async fetch(slug: INote.Slug['slug']): Promise<IResource<IRes<INote>>> {
     try {
-      const res = await $api.get<IRes<INote>>(`/notes/${slug}/`)
+      const res = await $api.get<IRes<INote>>(`/privnote/api/notes/${slug}/`)
       return { data: res.data }
     } catch (e) {
       if (axios.isAxiosError(e)) {
@@ -33,7 +33,7 @@ export const NotesService = {
 
   async passFetch(slug: INote.Slug['slug'], data: INoteData.Password): Promise<IResource<IRes<INote>>> {
     try {
-      const res = await $api.post<IRes<INote>>(`/notes/${slug}/`, data)
+      const res = await $api.post<IRes<INote>>(`/privnote/api/notes/${slug}/`, data)
       return { data: res.data }
     } catch (e) {
       if (axios.isAxiosError(e)) {

@@ -8,7 +8,7 @@ import axios from 'axios'
 export const FeedbackService = {
   async send(data: IFeedbackData): Promise<IResource<IRes<null>>> {
     try {
-      const res = await $api.post<IRes<null>>('/feedbacks/', data)
+      const res = await $api.post<IRes<null>>('/feedback/api/feedbacks/', data)
       return { data: res.data }
     } catch (e) {
       if (axios.isAxiosError(e)) {

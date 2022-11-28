@@ -28,7 +28,7 @@ services:
       - mariadb:mariadb
 
   celery:
-    build: privnote
+    build: ./privnote/
     command: celery -A privbird worker -B -l INFO
     env_file:
         - .env.prod
@@ -39,7 +39,7 @@ services:
       - mariadb:mariadb
 
   nginx:
-    build: ./nginx
+    build: ./nginx/
     ports:
       - "8000:8000"
     volumes:

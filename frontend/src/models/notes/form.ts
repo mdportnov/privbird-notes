@@ -81,7 +81,7 @@ export namespace INoteForm {
         }),
         options: object({
           network: (string() as StringSchema<ENetwork>).default('HTTPS').oneOf([...ENetwork.values]),
-          expires: (string() as StringSchema<EExpires>).default('Expires.YEAR').oneOf([...EExpires.values]),
+          expires: (string() as StringSchema<EExpires>).default('YEAR').oneOf([...EExpires.values]),
           email: string().email().default('').max(256),
         }).when(['note.notification', 'fake.notification'], {
           is: (...values: boolean[]) => values.some((el) => el),

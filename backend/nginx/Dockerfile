@@ -12,4 +12,4 @@ COPY ./fail2ban/nginx-req-limit.conf /etc/fail2ban/filter.d/nginx-req-limit.conf
 
 COPY entrypoint.sh /app/entrypoint.sh
 
-ENTRYPOINT ["/bin/sh", "/app/entrypoint.sh"]
+ENTRYPOINT ["/bin/bash", "/app/entrypoint.sh"]
