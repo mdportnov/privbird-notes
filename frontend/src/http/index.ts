@@ -20,8 +20,8 @@ export const axiosConfigFeedback: AxiosRequestConfig = {
   baseURL: baseURLFeedback,
 }
 
-export const $apiPrivnote = axios.create(axiosConfig)
+export const $apiPrivnote = axios.create(axiosConfigPrivnote)
 useLocaleInterceptor($apiPrivnote)
 
-export const $apiFeedback = axios.create(axiosConfig)
+export const $apiFeedback = axios.create(axiosConfigFeedback)
 useLocaleInterceptor($apiFeedback)
