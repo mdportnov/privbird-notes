@@ -4,7 +4,7 @@ from rest_framework.throttling import SimpleRateThrottle
 
 
 class RateThrottle(SimpleRateThrottle):
-    rate = '10/m'
+    rate = '100/h'
 
     def get_cache_key(self, request: Request, view):
         addr = request.META['REMOTE_ADDR']

@@ -55,7 +55,7 @@ ROOT_URLCONF = 'feedback.urls'
 
 STATIC_ROOT = BASE_DIR / 'static'
 
-STATIC_URL = 'static/'
+STATIC_URL = '/feedback/static/'
 
 TEMPLATES = [
     {

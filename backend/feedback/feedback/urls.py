@@ -6,9 +6,9 @@ from django.urls import include, path
 import feedback.utils.handlers
 
 urlpatterns = [
-  path('admin/', admin.site.urls),
-  path('rosetta/', include('rosetta.urls')),
-  path('api/feedbacks/', include('feedbacks.urls'))
+  path('feedback/admin/', admin.site.urls),
+  path('feedback/rosetta/', include('rosetta.urls')),
+  path('feedback/api/feedbacks/', include('feedbacks.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:

@@ -1,6 +1,6 @@
 FROM nginx:1.21
 
-RUN apt update && apt install -y fail2ban
+RUN apt update && apt install -y fail2ban iptables
 RUN rm /etc/nginx/conf.d/default.conf
 RUN unlink /var/log/nginx/access.log
 RUN unlink /var/log/nginx/error.log

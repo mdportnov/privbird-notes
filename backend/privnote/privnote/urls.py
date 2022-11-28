@@ -6,9 +6,9 @@ from django.urls import include, path
 import privnote.utils.handlers
 
 urlpatterns = [
-  path('admin/', admin.site.urls),
-  path('rosetta/', include('rosetta.urls')),
-  path('api/notes/', include('notes.urls'))
+  path('privnote/admin/', admin.site.urls),
+  path('privnote/rosetta/', include('rosetta.urls')),
+  path('privnote/api/notes/', include('notes.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:

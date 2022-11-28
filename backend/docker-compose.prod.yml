@@ -10,6 +10,9 @@ services:
     depends_on:
       - mariadb
       - redis
+    links:
+      - redis:redis
+      - mariadb:mariadb
 
   privnote:
     build: ./privnote/
@@ -20,6 +23,9 @@ services:
     depends_on:
       - mariadb
       - redis
+    links:
+      - redis:redis
+      - mariadb:mariadb
 
   celery:
     build: privnote
@@ -28,16 +34,9 @@ services:
         - .env.prod
     depends_on:
         - privnote
-        - redis
-
-  mariadb:
-    hostname: mariadb
-    image: mariadb
-    restart: always
-    env_file:
-      - .env.dev
-    volumes:
-      - mysql_data:/var/lib/mysql/data/
+    links:
+      - redis:redis
+      - mariadb:mariadb
 
   nginx:
     build: ./nginx
@@ -45,16 +44,24 @@ services:
       - "8000:8000"
     volumes:
       - ./nginx/log/:/var/log/nginx/
-      - ./feedback/static/:/static/
+      - ./feedback/static/:/feedback/static/
+      - ./privnote/static/:/privnote/static/
     depends_on:
       - feedback
       - privnote
     links:
       - feedback:feedback
       - privnote:privnote
-  
+
+  mariadb:
+    image: mariadb
+    restart: always
+    env_file:
+      - .env.dev
+    volumes:
+      - mysql_data:/var/lib/mysql/data/
+
   redis:
-    hostname: redis
     image: redis
     command: redis-server /usr/local/etc/redis/redis.conf
     volumes:
