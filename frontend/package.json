@@ -4,8 +4,8 @@
   "scripts": {
     "serve::dev": "vite --mode dev",
     "build::dev": "vite build --mode dev",
-    "serve::prod": "vite",
-    "build::prod": "vite build",
+    "serve::prod": "vite --mode prod",
+    "build::prod": "vite build --mode prod",
     "type-check": "vue-tsc --noEmit",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore"
