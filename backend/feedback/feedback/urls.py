@@ -12,7 +12,7 @@ urlpatterns = [
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:
-    urlpatterns.append(path('docs/', include('feedback.utils.swagger')))
+    urlpatterns.append(path('feedback/docs/', include('feedback.utils.swagger')))
 
 handler404 = feedback.utils.handlers.handler404
 handler500 = feedback.utils.handlers.handler500

@@ -11,6 +11,9 @@ services:
     depends_on:
       - mariadb
       - redis
+    links:
+      - redis:redis
+      - mariadb:mariadb
 
   privnote:
     build: privnote
@@ -22,24 +25,28 @@ services:
     depends_on:
       - mariadb
       - redis
+    links:
+      - redis:redis
+      - mariadb:mariadb
 
   celery:
-    build: privnote
-    command: celery -A privbird worker -B -l INFO
+    build: ./privnote/
+    command: celery -A privnote.celery worker -B -l INFO
     env_file:
         - .env.dev
     depends_on:
         - privnote
+    links:
+      - redis:redis
+      - mariadb:mariadb
 
   mariadb:
-    hostname: mariadb
     image: mariadb
     restart: always
     env_file:
       - .env.dev
   
   redis:
-    hostname: redis
     image: redis
     command: redis-server /usr/local/etc/redis/redis.conf
     volumes:

@@ -12,7 +12,7 @@ urlpatterns = [
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 if settings.DEBUG:
-    urlpatterns.append(path('docs/', include('privnote.utils.swagger')))
+    urlpatterns.append(path('privnote/docs/', include('privnote.utils.swagger')))
 
 handler404 = privnote.utils.handlers.handler404
 handler500 = privnote.utils.handlers.handler500

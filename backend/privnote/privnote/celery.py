@@ -5,7 +5,7 @@ from celery.schedules import crontab
 
 import notes.tasks
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'privbird.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'privnote.settings')
 
 app = Celery('privnote')
 app.config_from_object('django.conf:settings', namespace='CELERY')
