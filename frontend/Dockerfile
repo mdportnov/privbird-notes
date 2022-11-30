@@ -11,6 +11,8 @@ RUN npm install && \
 
 FROM nginx:1.21
 
+ENV DOLLAR=$
+
 RUN apt update && apt install -y fail2ban iptables
 
 RUN rm /etc/nginx/conf.d/default.conf
@@ -24,7 +26,7 @@ COPY ./nginx/fail2ban/jail.conf /etc/fail2ban/jail.local
 
 COPY ./nginx/fail2ban/nginx-req-limit.conf /etc/fail2ban/filter.d/nginx-req-limit.conf
 
-COPY ./nginx/nginx.conf /etc/nginx/conf.d
+COPY ./nginx/nginx.template.conf /tmp/nginx.template.conf
 
 COPY ./nginx/entrypoint.sh /app/entrypoint.sh
 
