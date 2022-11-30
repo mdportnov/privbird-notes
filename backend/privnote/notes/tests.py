@@ -7,6 +7,8 @@ from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.test import APIClient
 
+URL = '/privnote/api'
+
 
 def generate_note_request(
         real_content: str = token_hex(),
@@ -35,7 +37,7 @@ def generate_note_request(
 
 def create(data: Dict) -> Tuple[int, str]:
     client = APIClient()
-    response: JsonResponse = client.post('/api/notes/', data, format='json')
+    response: JsonResponse = client.post(f'{URL}/notes/', data, format='json')
     message = json.loads(response.content)
     content = message['data']['slug'] if 200 <= response.status_code <= 299 else None
     return response.status_code, content
@@ -93,7 +95,7 @@ class NoteKeyTestCase(TestCase):
     @staticmethod
     def read(slug: str) -> Tuple[int, Dict]:
         client = APIClient()
-        response: JsonResponse = client.get(f'/api/notes/{slug}/')
+        response: JsonResponse = client.get(f'{URL}/notes/{slug}/')
         message = json.loads(response.content)
         content = message['data']['content'] if 200 <= response.status_code <= 299 else None
         return response.status_code, content
@@ -157,7 +159,7 @@ class NoteWithPasswordTestCase(TestCase):
     def read(slug: str, password: str) -> Tuple[int, str]:
         client = APIClient()
         data = {'password': password}
-        response: JsonResponse = client.post(f'/api/notes/{slug}/', data, format='json')
+        response: JsonResponse = client.post(f'{URL}/notes/{slug}/', data, format='json')
         message = json.loads(response.content)
         content = message['data']['content'] if 200 <= response.status_code <= 299 else None
         return response.status_code, content
@@ -222,10 +224,4 @@ class NoteWithPasswordTestCase(TestCase):
         request = generate_note_request(real_password=password)
         code, slug = create(request)
         code, _ = self.read(slug, '0' * len(password))
-        self.assertEqual(code, status.HTTP_403_FORBIDDEN)
-
-    def test_read_without_password(self):
-        request = generate_note_request(real_password=token_hex())
-        code, slug = create(request)
-        code, _ = NoteKeyTestCase.read(slug)
         self.assertEqual(code, status.HTTP_403_FORBIDDEN)
