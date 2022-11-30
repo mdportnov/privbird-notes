@@ -31,7 +31,7 @@ services:
 
   celery:
     build: ./privnote/
-    command: celery -A privnote.celery worker -B -l INFO
+    command: celery -A privnote worker -B -l INFO
     env_file:
         - .env.prod
     depends_on:

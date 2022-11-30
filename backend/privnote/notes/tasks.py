@@ -4,7 +4,6 @@ from django.core.mail import send_mail
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
-from models import Note
 from privnote import settings
 from privnote.celery import app
 
@@ -23,6 +22,7 @@ def notify(email: str, message: str):
 
 @shared_task
 def delete_notes():
+    from notes.models import Note
     timestamp = now()
     notes = Note.objects.filter(expires__lt=timestamp)
     notes.delete()

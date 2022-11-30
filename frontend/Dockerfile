@@ -1,11 +1,13 @@
 FROM node:19-alpine as builder
 
+ARG mode
+
 WORKDIR /app/
 
 COPY . .
 
 RUN npm install && \
-    npm run build::prod
+    npm run build::${mode}
 
 FROM nginx:1.21
 

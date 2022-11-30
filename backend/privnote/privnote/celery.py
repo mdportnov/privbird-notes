@@ -3,8 +3,6 @@ import os
 from celery import Celery
 from celery.schedules import crontab
 
-import notes.tasks
-
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'privnote.settings')
 
 app = Celery('privnote')
@@ -13,7 +11,7 @@ app.autodiscover_tasks()
 
 app.conf.beat_schedule = {
     'delete-notes': {
-        'task': notes.tasks.delete_notes,
+        'task': 'notes.tasks.delete_notes',
         'schedule': crontab(),
     }
 }

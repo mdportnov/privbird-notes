@@ -94,7 +94,7 @@ REDIS_LOCATION = 'redis://{host}:6379/'.format(
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': f'{REDIS_LOCATION}/1',
+        'LOCATION': REDIS_LOCATION,
     }
 }
 
@@ -161,7 +161,7 @@ USE_L10N = True
 USE_TZ = True
 
 # Celery
-CELERY_BROKER_URL = f'{REDIS_LOCATION}/0'
+CELERY_BROKER_URL = REDIS_LOCATION
 
 # Email server configuration
 EMAIL_BACKEND = getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')

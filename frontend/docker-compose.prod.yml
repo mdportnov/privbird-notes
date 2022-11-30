@@ -5,7 +5,7 @@ services:
     build:
       context: .
       args:
-        mode: dev
+        mode: prod
     ports:
       - "80:80"
     volumes:
