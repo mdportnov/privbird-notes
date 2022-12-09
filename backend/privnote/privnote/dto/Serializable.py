@@ -3,6 +3,7 @@ from __future__ import annotations
 import dataclasses
 from abc import ABC
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
 from typing import Dict, Tuple
 
@@ -19,8 +20,13 @@ class Serializable(ABC):
         return from_dict(cls, data, config=Config(cast=[Enum]))
 
     def serialize(self) -> Dict:
+        def convert_value(obj):
+            if isinstance(obj, Enum):
+                return str(obj)
+            return obj
+
         return dataclasses.asdict(
-            self, dict_factory=lambda x: {k: v for (k, v) in x if k not in self.exclude}
+            self, dict_factory=lambda x: {k: convert_value(v) for (k, v) in x if k not in self.exclude}
         )
 
     @classmethod

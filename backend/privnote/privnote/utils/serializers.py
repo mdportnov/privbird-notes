@@ -6,7 +6,7 @@ from rest_framework.serializers import Serializer
 
 def get_validated_data(serializer: Type[Serializer], data: Type) -> Any:
     """
-    Get validated request data or throw validation exception
+    Get validated dto data or throw validation exception
     """
     serializer = serializer(data=data)
     if not serializer.is_valid():

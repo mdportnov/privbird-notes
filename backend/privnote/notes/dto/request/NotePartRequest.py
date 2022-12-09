@@ -5,7 +5,7 @@ from privnote.dto.Serializable import Serializable
 
 
 @dataclass
-class NoteRequest(Serializable):
+class NotePartRequest(Serializable):
     content: Optional[str]
     password: Optional[str]
     notification: Optional[bool]

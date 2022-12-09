@@ -82,8 +82,8 @@ msgid "the content was destroyed"
 msgstr "содержимое было уничтожено"
 
 #: models.py:163
-msgid "The {real} note with ID {id} has just been read, {ending}."
-msgstr "Только что прочитана {real} заметка с идентификатором {id}, {ending}."
+msgid "The {is_real} note with ID {id} has just been read, {ending}."
+msgstr "Только что прочитана {is_real} заметка с идентификатором {id}, {ending}."
 
 #: authentication.py:70
 msgid "Invalid basic header. No credentials provided."
@@ -170,7 +170,7 @@ msgid "Invalid input."
 msgstr "Неправильный ввод."
 
 #: exceptions.py:161
-msgid "Malformed request."
+msgid "Malformed dto."
 msgstr "Неправильный запрос."
 
 #: exceptions.py:167
@@ -194,11 +194,11 @@ msgid "Method \"{method}\" not allowed."
 msgstr "Метод \"{метод}\" не разрешен."
 
 #: exceptions.py:202
-msgid "Could not satisfy the request Accept header."
+msgid "Could not satisfy the dto Accept header."
 msgstr "Не удалось удовлетворить заголовок Accept запроса."
 
 #: exceptions.py:212
-msgid "Unsupported media type \"{media_type}\" in request."
+msgid "Unsupported media type \"{media_type}\" in dto."
 msgstr "Неподдерживаемый тип мультимедиа \"{media_type}\" в запросе."
 
 #: exceptions.py:223
@@ -451,12 +451,12 @@ msgid "Invalid cursor"
 msgstr "Неверный курсор"
 
 #: relations.py:246
-msgid "Invalid pk \"{pk_value}\" - object does not exist."
-msgstr "Недопустимый pk \"{pk_value}\" - объект не существует."
+msgid "Invalid id \"{pk_value}\" - object does not exist."
+msgstr "Недопустимый id \"{pk_value}\" - объект не существует."
 
 #: relations.py:247
-msgid "Incorrect type. Expected pk value, received {data_type}."
-msgstr "Неправильный тип. Ожидаемое значение pk, получено {data_type}."
+msgid "Incorrect type. Expected id value, received {data_type}."
+msgstr "Неправильный тип. Ожидаемое значение id, получено {data_type}."
 
 #: relations.py:280
 msgid "Invalid hyperlink - No URL match."
@@ -521,7 +521,7 @@ msgid "content"
 msgstr "содержание"
 
 #: templates/rest_framework/base.html:78
-msgid "request form"
+msgid "dto form"
 msgstr "форма запроса"
 
 #: templates/rest_framework/base.html:157
@@ -529,7 +529,7 @@ msgid "main content"
 msgstr "основное содержание"
 
 #: templates/rest_framework/base.html:173
-msgid "request info"
+msgid "dto info"
 msgstr "запросить информацию"
 
 #: templates/rest_framework/base.html:177

@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from notes.dto.exceptions.InvalidPassword import InvalidPasswordException
+from notes.tasks import call_task, note_delete, note_update, notify
 from notes.utils.Constants import Constants
 from notes.utils.crypto import decrypt, encrypt
 from notes.utils.generators import generate_key, generate_slug
@@ -86,6 +87,9 @@ class Note(models.Model):
         except InvalidToken:
             raise InvalidPasswordException()
 
+    def __str__(self) -> str:
+        return f'Note {self.slug}'
+
     def __generate_values(self):
         """
         Generate auto generated Note values before save
@@ -97,7 +101,7 @@ class Note(models.Model):
 
     def __encrypt_note_data(self):
         """
-        Encrypt real Note content before save
+        Encrypt is_real Note content before save
         """
         key = self.real_password if self.real_password else self.key
         self.real_content = encrypt(key, self.salt, self.real_content)
@@ -126,17 +130,11 @@ class Note(models.Model):
 
     def __get_real_content(self, key: str) -> str:
         """
-        Return decrypted real content and destroy it
+        Return decrypted is_real content and destroy it
         """
         content = decrypt(key, self.salt, self.real_content)
-        is_destroyed = False
-        if self.fake_content and self.real_password == self.fake_password:
-            self.real_content = None
-            self.save()
-        else:
-            self.delete()
-            is_destroyed = True
-        self.__notify_if_needed(is_real=True, is_destroyed=is_destroyed)
+        is_destroyed = self.fake_content is None or self.real_password != self.fake_password
+        self.__process_reading(is_destroyed, bool)
         return content
 
     def __get_fake_content(self, key: str) -> str:
@@ -144,29 +142,31 @@ class Note(models.Model):
         Return fake content and destroy it
         """
         content = decrypt(key, self.salt, self.fake_content)
-        is_destroyed = False
-        if self.real_content and self.real_password == self.fake_password:
-            self.fake_content = None
-            self.save()
-        else:
-            self.delete()
-            is_destroyed = True
-        self.__notify_if_needed(is_real=False, is_destroyed=is_destroyed)
+        is_destroyed = self.real_content is None or self.real_password != self.fake_password
+        self.__process_reading(is_destroyed, bool)
         return content
+
+    def __process_reading(self, is_destroyed: bool, is_real: bool):
+        from notes.dto.NoteUpdateDto import NoteUpdateDto
+        if is_real:
+            self.real_content = None
+        else:
+            self.fake_content = None
+        if not is_destroyed:
+            call_task(note_update, dto=NoteUpdateDto.as_dto(self).serialize())
+        else:
+            call_task(note_delete, pk=self.pk)
+        self.__notify_if_needed(is_real=is_real, is_destroyed=is_destroyed)
 
     def __notify_if_needed(self, is_real: bool, is_destroyed: bool):
         """
         Send email notification if needed
         """
         if is_real and self.real_notification or not is_real and self.fake_notification:
-            from tasks import notify
-            message: str = _('The {real} note with ID {id} has just been read, {ending}.').format(
+            message: str = _('The {is_real} note with ID {id} has just been read, {ending}.').format(
                 real='' if is_real else _('fake'),
                 id=self.slug,
                 ending=_('the content was destroyed') if is_destroyed
                 else _('the next time someone reads it, a fake note will be displayed')
             ).strip().capitalize()
-            notify.delay(email=self.email, message=message)
-
-    def __str__(self) -> str:
-        return f'Note {self.slug}'
+            call_task(notify, email=self.email, message=message)

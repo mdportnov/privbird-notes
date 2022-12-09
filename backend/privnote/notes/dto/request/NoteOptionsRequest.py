@@ -7,7 +7,7 @@ from privnote.dto.Serializable import Serializable
 
 
 @dataclass
-class OptionsRequest(Serializable):
-    network: Network
-    expires: Expires
+class NoteOptionsRequest(Serializable):
     email: Optional[str]
+    expires: Expires = Expires.YEAR
+    network: Network = Network.HTTPS

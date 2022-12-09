@@ -6,13 +6,19 @@ from django.utils.timezone import now
 
 
 class Expires(Enum):
-    DAY = timedelta(days=1)
-    WEEK = timedelta(days=7)
-    MONTH = timedelta(days=30)
-    YEAR = timedelta(days=365)
+    DAY = 'DAY'
+    WEEK = 'WEEK'
+    MONTH = 'MONTH'
+    YEAR = 'YEAR'
 
     def __str__(self) -> str:
         return self.name
 
     def get_expiration(self) -> datetime:
-        return now() + self.value
+        delta = {
+            self.DAY: timedelta(days=1),
+            self.WEEK: timedelta(days=7),
+            self.MONTH: timedelta(days=30),
+            self.YEAR: timedelta(days=365)
+        }
+        return now() + delta[self]

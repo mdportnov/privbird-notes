@@ -8,6 +8,7 @@ from notes.dto.exceptions.NoteNotFound import NoteNotFoundException
 from notes.dto.exceptions.PasswordRequired import PasswordRequiredException
 from notes.dto.messages.NoteCreatedMessage import NoteCreatedMessage
 from notes.dto.messages.NoteRetrievedMessage import NoteRetrievedMessage
+from notes.dto.request.NoteCreateRequest import NoteCreateRequest
 from notes.dto.request.PasswordRequest import PasswordRequest
 from notes.dto.serializers.NoteRequestSerializer import NoteRequestSerializer
 from notes.dto.serializers.PasswordSerializer import PasswordSerializer
@@ -68,9 +69,8 @@ class CreateNoteView(APIView):
         - If at least one flag from `note.notification` or `fake.notification` is set to true, it cannot be null.
         """
 
-        note_request: NoteRequestSerializer = get_validated_data(NoteRequestSerializer, request.data)
-        note = note_request.validate_and_save()
-        slug = f'{note.slug}/{note.key}' if note.key else note.slug
+        note_request: NoteCreateRequest = get_validated_data(NoteRequestSerializer, request.data)
+        slug = note_request.save()
         return NoteCreatedMessage(slug).as_json_response()
 
 

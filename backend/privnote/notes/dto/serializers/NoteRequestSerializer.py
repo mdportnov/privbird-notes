@@ -3,10 +3,9 @@ from __future__ import annotations
 from drf_yasg.openapi import Schema, TYPE_OBJECT
 from rest_framework import serializers
 
-from notes.dto.request.CreateNoteRequest import CreateNoteRequest
+from notes.dto.request.NoteCreateRequest import NoteCreateRequest
 from notes.dto.serializers.NoteSerializer import NoteSerializer
 from notes.dto.serializers.OptionsSerializer import OptionsSerializer
-from notes.models import Note
 
 
 class NoteRequestSerializer(serializers.Serializer):
@@ -14,25 +13,8 @@ class NoteRequestSerializer(serializers.Serializer):
     fake = NoteSerializer()
     options = OptionsSerializer()
 
-    def validate_and_save(self) -> Note:
-        data: NoteRequestSerializer = self.validated_data
-        note = Note(
-            real_content=data.note.content,
-            real_password=data.note.password,
-            real_notification=data.note.notification,
-
-            fake_content=data.fake.content,
-            fake_password=data.fake.password,
-            fake_notification=data.fake.notification,
-
-            expires=data.options.expires.get_expiration(),
-            email=data.options.email
-        )
-        note.save()
-        return note
-
     def validate(self, attrs):
-        request: CreateNoteRequest = CreateNoteRequest.deserialize(attrs)
+        request: NoteCreateRequest = NoteCreateRequest.deserialize(attrs)
 
         if request.note.content is None:
             raise serializers.ValidationError({'note': {'content': 'This field may not be null.'}})
