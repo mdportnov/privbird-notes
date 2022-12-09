@@ -91,6 +91,13 @@ REDIS_LOCATION = 'redis://{host}:6379/'.format(
     host=getenv('REDIS_HOST', 'localhost')
 )
 
+# Message broker
+RABBITMQ_LOCATION = '{user}:{password}@{host}:5672/'.format(
+    user=getenv('RABBITMQ_DEFAULT_USER', 'root'),
+    password=getenv('RABBITMQ_DEFAULT_PASS', 'realpongo'),
+    host=getenv('RABBITMQ_HOST', 'localhost')
+)
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
@@ -161,8 +168,8 @@ USE_L10N = True
 USE_TZ = True
 
 # Celery
-CELERY_BROKER_URL = REDIS_LOCATION
-CELERY_RESULT_BACKEND = REDIS_LOCATION
+CELERY_BROKER_URL = 'amqp://' + RABBITMQ_LOCATION
+CELERY_RESULT_BACKEND = 'rpc://' + RABBITMQ_LOCATION
 
 # Email server configuration
 EMAIL_BACKEND = getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
