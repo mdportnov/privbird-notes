@@ -1,18 +1,14 @@
 # PrivBird
 
-## Development servers
+## Run services
 
 ```bash
-docker-compose -f ./backend/docker-compose.yml up --build -d
+docker-compose -f ./backend/feedback/docker-compose.yml up --build -d
+docker-compose -f ./backend/privnote/docker-compose.yml up --build -d
 docker-compose -f ./frontend/docker-compose.yml up --build -d
 ```
 
-## Production servers
-
-```bash
-docker-compose -f ./backend/docker-compose.prod.yml up --build -d
-docker-compose -f ./frontend/docker-compose.prod.yml up --build -d
-```
+> If you want to run the backend services in development mode, pass `DJANGO_DEBUG=1` in the `.env` file
 
 ## Run tests
 
