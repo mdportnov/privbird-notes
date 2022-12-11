@@ -6,13 +6,13 @@ from typing import Optional
 from cryptography.fernet import InvalidToken
 from django.contrib.auth.hashers import check_password, make_password
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from notes.dto.exceptions.InvalidPassword import InvalidPasswordException
 from notes.tasks import call_task, note_delete, note_update, notify
 from notes.utils.Constants import Constants
 from notes.utils.crypto import decrypt, encrypt
+from notes.utils.email import compose_email
 from notes.utils.generators import generate_key, generate_slug
 
 
@@ -134,7 +134,7 @@ class Note(models.Model):
         """
         content = decrypt(key, self.salt, self.real_content)
         is_destroyed = self.fake_content is None or self.real_password != self.fake_password
-        self.__process_reading(is_destroyed, bool)
+        self.__process_reading(is_destroyed, True)
         return content
 
     def __get_fake_content(self, key: str) -> str:
@@ -143,7 +143,7 @@ class Note(models.Model):
         """
         content = decrypt(key, self.salt, self.fake_content)
         is_destroyed = self.real_content is None or self.real_password != self.fake_password
-        self.__process_reading(is_destroyed, bool)
+        self.__process_reading(is_destroyed, False)
         return content
 
     def __process_reading(self, is_destroyed: bool, is_real: bool):
@@ -163,10 +163,5 @@ class Note(models.Model):
         Send email notification if needed
         """
         if is_real and self.real_notification or not is_real and self.fake_notification:
-            message: str = _('The {is_real} note with ID {id} has just been read, {ending}.').format(
-                real='' if is_real else _('fake'),
-                id=self.slug,
-                ending=_('the content was destroyed') if is_destroyed
-                else _('the next time someone reads it, a fake note will be displayed')
-            ).strip().capitalize()
+            message = compose_email(is_real, self.slug, is_destroyed)
             call_task(notify, email=self.email, message=message)

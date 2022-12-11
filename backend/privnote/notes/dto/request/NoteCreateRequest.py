@@ -29,5 +29,6 @@ class NoteCreateRequest(Serializable):
         )
 
     def save(self) -> str:
-        from notes.tasks import call_task, note_save
-        return call_task(note_save, request=self.serialize())
+        from notes.tasks import note_save, call_task
+        print(f'Save note with network {self.options.network}')
+        return call_task(note_save, queue=self.options.network.value, request=self.serialize())

@@ -12,10 +12,11 @@ from privnote import settings
 from privnote.celery import app
 
 
-def call_task(task, *args, **kwargs):
+def call_task(task, **kwargs):
     if settings.DEBUG:
-        return task(*args, **kwargs)
-    return task.delay(*args, **kwargs).get()
+        return task(**kwargs)
+    queue = kwargs.pop('queue') if 'queue' in kwargs else settings.CELERY_DEFAULT_QUEUE
+    return task.apply_async(kwargs=kwargs, queue=queue).get()
 
 
 @app.task
@@ -31,9 +32,9 @@ def notify(email: str, message: str):
 
 
 @app.task
-def note_save(request: Dict, using=None) -> str:
+def note_save(request: Dict) -> str:
     note = NoteCreateRequest.deserialize(request).as_note()
-    note.save(using=using)
+    note.save()
     return note.slug + (f'/{note.key}' if note.key else '')
 
 
