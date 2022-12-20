@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from django.utils.translation import gettext_lazy as _
 from drf_yasg.openapi import Schema, TYPE_OBJECT
 from rest_framework import serializers
 
@@ -17,33 +18,33 @@ class NoteRequestSerializer(serializers.Serializer):
         request: NoteCreateRequest = NoteCreateRequest.deserialize(attrs)
 
         if request.note.content is None:
-            raise serializers.ValidationError({'note': {'content': 'This field may not be null.'}})
+            raise serializers.ValidationError({'note': {'content': _('This field may not be null.')}})
 
         if request.note.password is None:
             if request.fake.password:
-                raise serializers.ValidationError({'fake': {'password': 'This field must be null.'}})
+                raise serializers.ValidationError({'fake': {'password': _('This field must be null.')}})
 
         if request.note.notification is None:
-            raise serializers.ValidationError({'note': {'content': 'This field may not be null.'}})
+            raise serializers.ValidationError({'note': {'content': _('This field may not be null.')}})
 
         if request.fake.content is None:
             if request.fake.password:
-                raise serializers.ValidationError({'fake': {'password': 'This field must be null.'}})
+                raise serializers.ValidationError({'fake': {'password': _('This field must be null.')}})
 
             if request.fake.notification:
-                raise serializers.ValidationError({'fake': {'notification': 'This field must be null.'}})
+                raise serializers.ValidationError({'fake': {'notification': _('This field must be null.')}})
 
         if request.fake.content:
             if request.note.password:
                 if request.fake.password is None:
-                    raise serializers.ValidationError({'fake': {'password': 'This field may not be null.'}})
+                    raise serializers.ValidationError({'fake': {'password': _('This field may not be null.')}})
 
             if request.fake.notification is None:
-                raise serializers.ValidationError({'fake': {'notification': 'This field may not be null.'}})
+                raise serializers.ValidationError({'fake': {'notification': _('This field may not be null.')}})
 
         if request.options.email is None:
             if request.note.notification or request.fake.notification:
-                raise serializers.ValidationError({'options': {'email': 'This field may not be null.'}})
+                raise serializers.ValidationError({'options': {'email': _('This field may not be null.')}})
 
         return request
 

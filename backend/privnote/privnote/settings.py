@@ -171,6 +171,7 @@ USE_TZ = True
 CELERY_BROKER_URL = 'amqp://' + RABBITMQ_LOCATION
 CELERY_RESULT_BACKEND = 'rpc://' + RABBITMQ_LOCATION
 CELERY_DEFAULT_QUEUE = getenv('CELERY_DEFAULT_QUEUE', 'HTTPS')
+CELERY_ALLOWED_QUEUES = {'HTTPS', 'TOR', 'I2P'}
 
 # Email server configuration
 EMAIL_BACKEND = getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')

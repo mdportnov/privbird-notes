@@ -85,6 +85,10 @@ msgstr "содержимое было уничтожено"
 msgid "The {is_real} note with ID {id} has just been read, {ending}."
 msgstr "Только что прочитана {is_real} заметка с идентификатором {id}, {ending}."
 
+#: NoteRequestSerializer.py:25
+msgid "This field must be null."
+msgstr "Это поле должно быть нулевым."
+
 #: authentication.py:70
 msgid "Invalid basic header. No credentials provided."
 msgstr "Неверный basic заголовок. Учетные данные не предоставлены."

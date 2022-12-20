@@ -10,12 +10,15 @@ from notes.dto.NoteUpdateDto import NoteUpdateDto
 from notes.dto.request.NoteCreateRequest import NoteCreateRequest
 from privnote import settings
 from privnote.celery import app
+from privnote.dto.exceptions.UnknownQueueException import UnknownQueueException
 
 
 def call_task(task, **kwargs):
     if settings.DEBUG:
         return task(**kwargs)
-    queue = kwargs.pop('queue') if 'queue' in kwargs else settings.CELERY_DEFAULT_QUEUE
+    queue = kwargs.pop('queue') if 'queue' in kwargs else None
+    if queue not in settings.CELERY_ALLOWED_QUEUES:
+        raise UnknownQueueException()
     return task.apply_async(kwargs=kwargs, queue=queue).get()
 
 

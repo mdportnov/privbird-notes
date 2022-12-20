@@ -80,6 +80,10 @@ msgstr ""
 msgid "The {is_real} note with ID {id} has just been read, {ending}."
 msgstr ""
 
+#: NoteRequestSerializer.py:25
+msgid "This field must be null."
+msgstr ""
+
 #: authentication.py:70
 msgid "Invalid basic header. No credentials provided."
 msgstr ""
