@@ -22,7 +22,7 @@ services:
       - .env
     depends_on:
       - privnote
-      - rabbitmq
+      # - rabbitmq
     links:
       - redis:redis
       - mariadb:mariadb
@@ -54,15 +54,15 @@ services:
       - ./redis/data/:/data/
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
 
-  rabbitmq:
-    image: rabbitmq
-    restart: always
-    env_file:
-      - .env
-    volumes:
-      - ./rabbitmq:/var/lib/rabbitmq
-    ports:
-      - "15672:15672"
+  # rabbitmq:
+  #   image: rabbitmq
+  #   restart: always
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./rabbitmq:/var/lib/rabbitmq
+  #   ports:
+  #     - "15672:15672"
 
 volumes:
   mysql_data:

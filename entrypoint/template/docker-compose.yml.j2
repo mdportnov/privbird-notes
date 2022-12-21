@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  torint:
+    build: ./torconnector
+    container_name: torint
+    restart: always
+    ports:
+      - "80:5000"
+    environment:
+      - TOR_SITE={{ toraddr }}
+
+{% if cur_env == 'TOR' %}
+  torext:
+    image: goldy/tor-hidden-service:latest
+    container_name: torext
+    restart: always
+    links:
+      - torint
+    environment:
+        PB_TOR_SERVICE_HOSTS: '80:torint:5000'
+{% endif %}
