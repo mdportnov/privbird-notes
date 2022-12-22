@@ -1,4 +1,4 @@
-version: "3"
+version: "3.5"
 
 services:
   privnote:
@@ -14,6 +14,8 @@ services:
     links:
       - redis:redis
       - mariadb:mariadb
+    networks:
+      - internal
 
   celery:
     build: ./
@@ -22,21 +24,25 @@ services:
       - .env
     depends_on:
       - privnote
-      # - rabbitmq
+      - rabbitmq
     links:
       - redis:redis
       - mariadb:mariadb
+    networks:
+      - internal
 
   nginx:
     build: ./nginx/
-    ports:
-      - "8001:8000"
     volumes:
       - ./nginx/log/:/var/log/nginx/
     depends_on:
       - privnote
     links:
       - privnote:privnote
+    networks:
+      privbird:
+        ipv4_address: 172.30.0.11
+      internal:
 
   mariadb:
     image: mariadb
@@ -45,6 +51,8 @@ services:
       - .env
     volumes:
       - mysql_data:/var/lib/mysql/data/
+    networks:
+      - internal
 
   redis:
     image: redis
@@ -53,16 +61,26 @@ services:
     volumes:
       - ./redis/data/:/data/
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - internal
 
-  # rabbitmq:
-  #   image: rabbitmq
-  #   restart: always
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #     - ./rabbitmq:/var/lib/rabbitmq
-  #   ports:
-  #     - "15672:15672"
+  rabbitmq:
+    image: rabbitmq
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./rabbitmq:/var/lib/rabbitmq
+    ports:
+      - "15672:15672"
+    networks:
+      - internal
 
 volumes:
   mysql_data:
+
+networks:
+  internal:
+  privbird:
+    name: privbird
+    driver: bridge

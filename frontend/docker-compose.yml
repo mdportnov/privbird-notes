@@ -1,4 +1,4 @@
-version: "3"
+version: "3.5"
 
 services:
   tor:
@@ -21,3 +21,8 @@ services:
       - ./dist/:/frontend/
     env_file:
         - .env.prod
+
+networks:
+  default:
+    name: privbird
+    external: true
