@@ -85,6 +85,8 @@
       become: yes
       docker_network:
         name: privbird
+        gateway: 172.30.0.1
+        subnet: 172.30.0.0/24
 
     - name: Run HTTPS docker-compose.yml
       become: yes
@@ -131,6 +133,8 @@
       become: yes
       docker_network:
         name: privbird
+        gateway: 172.30.0.1
+        subnet: 172.30.0.0/24
 
     - name: Run HTTPS docker-compose.yml
       become: yes
