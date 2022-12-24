@@ -51,7 +51,7 @@
     - name: Install modules for Python
       become: yes
       pip:
-        name: 
+        name:
           - docker
           - docker-compose
           - requests
@@ -66,7 +66,7 @@
         name: rabbitmq
         state: started
         restart_policy: always
-#        env_file: "{{ playbook_dir }}/backend/privnote/.env"
+        #        env_file: "{{ playbook_dir }}/backend/privnote/.env"
         ports: "15672:15672"
 
 - name: Run HTTPS instance
@@ -86,8 +86,8 @@
       docker_network:
         name: privbird
         ipam_config:
-          gateway: 172.30.0.1
-          subnet: 172.30.0.0/24
+          - gateway: 172.30.0.1
+            subnet: 172.30.0.0/24
 
     - name: Run HTTPS docker-compose.yml
       become: yes
@@ -135,8 +135,8 @@
       docker_network:
         name: privbird
         ipam_config:
-          gateway: 172.30.0.1
-          subnet: 172.30.0.0/24
+          - subnet: 172.30.0.0/24
+            gateway: 172.30.0.1
 
     - name: Run HTTPS docker-compose.yml
       become: yes
