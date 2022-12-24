@@ -82,7 +82,8 @@
         mode: '0644'
 
     - name: Create docker network
-      command: docker network create privbird
+      docker_network:
+        name: privbird
 
     - name: Run HTTPS docker-compose.yml
       become: yes
@@ -126,7 +127,8 @@
         mode: '0644'
 
     - name: Create docker network
-      command: docker network create privbird
+      docker_network:
+        name: privbird
 
     - name: Run HTTPS docker-compose.yml
       become: yes
