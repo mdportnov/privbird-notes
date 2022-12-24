@@ -82,6 +82,7 @@
         mode: '0644'
 
     - name: Create docker network
+      become: yes
       docker_network:
         name: privbird
 
@@ -127,6 +128,7 @@
         mode: '0644'
 
     - name: Create docker network
+      become: yes
       docker_network:
         name: privbird
 
