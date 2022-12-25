@@ -197,7 +197,7 @@
         project_src: "/var/opt/backend/privnote/"
       environment:
         CELERY_DEFAULT_QUEUE: TOR
-        RABBITMQ_HOST: "{{ hostvars['common'] }}"
+        RABBITMQ_HOST: "{{ hostvars['common']['ansible_default_ipv4']['address'] }}"
 
     - name: Copy frontend
       become: yes
