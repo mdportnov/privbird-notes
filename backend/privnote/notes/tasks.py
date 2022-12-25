@@ -66,7 +66,6 @@ def wait_for_response(task_id: str) -> str:
 
 @app.task
 def note_save(request: Dict, initial_queue: str, destination_queue: str) -> str:
-    global results
     task_id = str(uuid4())
     logger.info(f'Save note from {initial_queue} to {destination_queue}')
     call_task(note_write, queue=destination_queue, request=request, initial_queue=initial_queue, task_id=task_id)
