@@ -14,8 +14,6 @@ services:
     links:
       - redis:redis
       - mariadb:mariadb
-    networks:
-      - internal
 
   nginx:
     build: ./nginx/
@@ -27,10 +25,8 @@ services:
       - feedback
     links:
       - feedback:feedback
-    networks:
-      privbird:
-        ipv4_address: 172.30.0.10
-      internal:
+    ports:
+      - "8000:8000"
 
   mariadb:
     image: mariadb
@@ -39,8 +35,6 @@ services:
       - .env
     volumes:
       - mysql_data:/var/lib/mysql/data/
-    networks:
-      - internal
 
   redis:
     image: redis
@@ -48,14 +42,6 @@ services:
     volumes:
       - ./redis/data/:/data/
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
-    networks:
-      - internal
 
 volumes:
   mysql_data:
-
-networks:
-  internal:
-  privbird:
-    name: privbird
-    driver: bridge

@@ -7,7 +7,7 @@ services:
     links:
       - nginx
     environment:
-        PB_TOR_SERVICE_HOSTS: '80:nginx:80'
+      PB_TOR_SERVICE_HOSTS: '80:nginx:80'
 
   nginx:
     build:
@@ -20,7 +20,9 @@ services:
       - ./nginx/log/:/var/log/nginx/
       - ./dist/:/frontend/
     env_file:
-        - .env.prod
+      - .env.prod
+    environment:
+      FEEDBACK_URL: http://192.168.173.110:8000
 
 networks:
   default:

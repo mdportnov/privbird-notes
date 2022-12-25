@@ -56,10 +56,46 @@
           - docker-compose
           - requests
 
-- name: Run rabbitmq instance
+#- name: Clean docker
+#  hosts: all
+#  tasks:
+#    - name: Get running containers
+#      become: yes
+#      docker_host_info:
+#        containers: yes
+#      register: docker_info
+#
+#    - name: Stop running containers
+#      become: yes
+#      docker_container:
+#        name: "{{ item }}"
+#        state: stopped
+#      loop: "{{ docker_info.containers | map(attribute='Id') | list }}"
+#
+#    - name: Remove stopped docker containers
+#      become: yes
+#      shell: |
+#        docker rm $(docker ps -a -q);
+#      when: docker_info.containers != 0
+#
+#    - name: Get images
+#      become: yes
+#      docker_host_info:
+#        images: yes
+#        verbose_output: yes
+#      register: image_info
+#
+#    - name: Remove images
+#      become: yes
+#      docker_image:
+#        name: "{{ item }}"
+#        state: absent
+#      loop: "{{ image_info.images | map(attribute='Id') | list }}"
+
+- name: Run shared services
   hosts: common
   tasks:
-    - name: deploy rabbitmq docker container
+    - name: Deploy rabbitmq docker container
       become: yes
       docker_container:
         image: rabbitmq
@@ -68,6 +104,20 @@
         restart_policy: always
         #        env_file: "{{ playbook_dir }}/backend/privnote/.env"
         ports: "15672:15672"
+
+    - name: Copy backend
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/backend"
+        dest: /var/opt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Run feedback docker-compose.yml
+      become: yes
+      docker_compose:
+        project_src: "/var/opt/backend/feedback/"
 
 - name: Run HTTPS instance
   hosts: http
@@ -111,7 +161,7 @@
       docker_compose:
         project_src: "/var/opt/frontend/"
       environment:
-        FEEDBACK_URL: "http://{{ hostvars['common']['ansible_default_ipv4']['address'] }}:8000"
+        FEEDBACK_URL: "http://{{ hostvars['common'].ansible_host }}:8000"
 
     - name: Get http instance onion address
       become: yes
@@ -144,7 +194,7 @@
         project_src: "/var/opt/backend/privnote/"
       environment:
         CELERY_DEFAULT_QUEUE: TOR
-        RABBITMQ_HOST: "{{ hostvars['common']['ansible_default_ipv4']['address'] }}"
+        RABBITMQ_HOST: "{{ hostvars['common'] }}"
 
     - name: Copy frontend
       become: yes

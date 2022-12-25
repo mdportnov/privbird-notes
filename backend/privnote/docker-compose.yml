@@ -19,7 +19,7 @@ services:
 
   celery:
     build: ./
-    command: celery -A privnote worker -B -l INFO
+    command: celery -A privnote worker -B -l INFO -Q \${CELERY_DEFAULT_QUEUE}
     env_file:
       - .env
     depends_on:
