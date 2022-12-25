@@ -87,9 +87,8 @@ SWAGGER_SETTINGS = {
 }
 
 # Cache
-REDIS_LOCATION = 'redis://{host}:6379/'.format(
-    host=getenv('REDIS_HOST', 'localhost')
-)
+REDIS_HOST = getenv('REDIS_HOST', 'localhost')
+REDIS_LOCATION = 'redis://{host}:6379/'.format(host=REDIS_HOST)
 
 CACHES = {
     'default': {
@@ -175,7 +174,6 @@ CELERY_ALLOWED_QUEUES = {'HTTPS', 'TOR', 'I2P'}
 CELERY_ROUTES = {
     'notes.tasks.*': {'queue': CELERY_DEFAULT_QUEUE},
 }
-
 
 # Email server configuration
 EMAIL_BACKEND = getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')

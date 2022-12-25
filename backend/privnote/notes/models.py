@@ -123,9 +123,9 @@ class Note(models.Model):
         else:
             self.fake_content = None
         if not is_destroyed:
-            call_task(note_update, dto=NoteUpdateDto.as_dto(self).serialize(), queue=CELERY_DEFAULT_QUEUE)
+            call_task(note_update, CELERY_DEFAULT_QUEUE, dto=NoteUpdateDto.as_dto(self).serialize())
         else:
-            call_task(note_delete, pk=self.pk, queue=CELERY_DEFAULT_QUEUE)
+            call_task(note_delete, CELERY_DEFAULT_QUEUE, pk=self.pk)
         self.__notify_if_needed(is_real=is_real, is_destroyed=is_destroyed)
 
     def __notify_if_needed(self, is_real: bool, is_destroyed: bool):
@@ -134,4 +134,4 @@ class Note(models.Model):
         """
         if is_real and self.real_notification or not is_real and self.fake_notification:
             message = compose_email(is_real, self.slug, is_destroyed)
-            call_task(notify, email=self.email, message=message, queue=CELERY_DEFAULT_QUEUE)
+            call_task(notify, CELERY_DEFAULT_QUEUE, email=self.email, message=message)

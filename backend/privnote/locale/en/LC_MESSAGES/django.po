@@ -84,6 +84,10 @@ msgstr ""
 msgid "This field must be null."
 msgstr ""
 
+#: ExternalServerException.py:9
+msgid "External server does not respond."
+msgstr ""
+
 #: authentication.py:70
 msgid "Invalid basic header. No credentials provided."
 msgstr ""

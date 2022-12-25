@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from notes.dto.request.NoteOptionsRequest import NoteOptionsRequest
 from notes.dto.request.NotePartRequest import NotePartRequest
+from privnote import settings
 from privnote.dto.Serializable import Serializable
 
 
@@ -31,4 +32,10 @@ class NoteCreateRequest(Serializable):
     def save(self) -> str:
         from notes.tasks import note_save, call_task
         print(f'Save note with network {self.options.network}')
-        return call_task(note_save, queue=self.options.network.value, request=self.serialize())
+        return call_task(
+            task=note_save,
+            queue=settings.CELERY_DEFAULT_QUEUE,
+            initial_queue=settings.CELERY_DEFAULT_QUEUE,
+            destination_queue=self.options.network.value,
+            request=self.serialize()
+        )
