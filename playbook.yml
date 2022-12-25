@@ -156,6 +156,9 @@
         group: root
         mode: '0644'
 
+    - name: Show feedback url
+      command: echo "http://{{ hostvars['common'].ansible_host }}:8000"
+
     - name: Run HTTPS-fe docker-compose.yml
       become: yes
       docker_compose:
@@ -205,12 +208,15 @@
         group: root
         mode: '0644'
 
+    - name: Show feedback url
+      command: echo "http://{{ hostvars['common'].ansible_host }}:8000"
+
     - name: Run TOR-fe docker-compose.yml
       become: yes
       docker_compose:
         project_src: "/var/opt/frontend/"
       environment:
-        FEEDBACK_URL: "http://{{ hostvars['common']['ansible_default_ipv4']['address'] }}:8000"
+        FEEDBACK_URL: "http://{{ hostvars['common'].ansible_host }}:8000"
 
     - name: Get TOR instance onion address
       become: yes
