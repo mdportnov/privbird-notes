@@ -1,0 +1,26 @@
+---
+- name: Prepare sources
+  hosts: localhost
+  tasks:
+    - name: Clean sources
+      command: git clean -fdx
+
+- name: Clean docker
+  hosts: all
+  tasks:
+    - name: Get running containers
+      become: yes
+      docker_host_info:
+        containers: yes
+      register: docker_info
+
+    - name: Stop running containers
+      become: yes
+      docker_container:
+        name: "{{ item }}"
+        state: stopped
+      loop: "{{ docker_info.containers | map(attribute='Id') | list }}"
+
+    - name: Prune everything
+      become: yes
+      command: docker system prune -a -f

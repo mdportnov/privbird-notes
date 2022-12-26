@@ -1,10 +1,4 @@
 ---
-- name: Prepare sources
-  hosts: localhost
-  tasks:
-    - name: Clean sources
-      command: git clean -fdx
-
 - name: Prepare environments
   hosts: all
   tasks:
@@ -55,42 +49,6 @@
           - docker
           - docker-compose
           - requests
-
-#- name: Clean docker
-#  hosts: all
-#  tasks:
-#    - name: Get running containers
-#      become: yes
-#      docker_host_info:
-#        containers: yes
-#      register: docker_info
-#
-#    - name: Stop running containers
-#      become: yes
-#      docker_container:
-#        name: "{{ item }}"
-#        state: stopped
-#      loop: "{{ docker_info.containers | map(attribute='Id') | list }}"
-#
-#    - name: Remove stopped docker containers
-#      become: yes
-#      shell: |
-#        docker rm $(docker ps -a -q);
-#      when: docker_info.containers != 0
-#
-#    - name: Get images
-#      become: yes
-#      docker_host_info:
-#        images: yes
-#        verbose_output: yes
-#      register: image_info
-#
-#    - name: Remove images
-#      become: yes
-#      docker_image:
-#        name: "{{ item }}"
-#        state: absent
-#      loop: "{{ image_info.images | map(attribute='Id') | list }}"
 
 - name: Run shared services
   hosts: common
