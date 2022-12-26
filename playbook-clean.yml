@@ -1,5 +1,5 @@
 ---
-- name: Prepare sources
+- name: Clean sources
   hosts: localhost
   tasks:
     - name: Clean sources

@@ -22,7 +22,7 @@
     - name: Run docker-compose.yml
       become: yes
       docker_compose:
-        project_src: "/var/opt/backend/privnote/"
+        project_src: "/var/opt/privnote/"
       environment:
         CELERY_DEFAULT_QUEUE: HTTPS
         RABBITMQ_HOST: "{{ hostvars['common'].ansible_host }}"
@@ -45,5 +45,5 @@
 
     - name: Get http instance onion address
       become: yes
-      command: sudo docker exec -ti tor  onions --json
+      command: sudo docker exec -it tor onions --json
       register: http_onion_addr

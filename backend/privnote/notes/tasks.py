@@ -43,6 +43,7 @@ def notify(email: str, message: str):
 
 @app.task
 def note_append_result(task_id: str, slug: str):
+    logger.info(f'Append for {task_id} result {slug}')
     conn.set(task_id, slug)
 
 
@@ -51,11 +52,13 @@ def note_write(request: Dict, initial_queue: str, task_id: str):
     note = NoteCreateRequest.deserialize(request).as_note()
     note.save()
     slug = note.slug + (f'/{note.key}' if note.key else '')
+    logger.info(f'Create note with slug {slug}')
     call_task(note_append_result, queue=initial_queue, task_id=task_id, slug=slug)
 
 
 def wait_for_response(task_id: str) -> str:
     retries = 0
+    logger.info(f'Wait for {task_id}...')
     while not conn.exists(task_id):
         sleep(0.1)
         retries += 1

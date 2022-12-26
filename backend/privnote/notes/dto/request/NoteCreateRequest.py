@@ -32,10 +32,12 @@ class NoteCreateRequest(Serializable):
     def save(self) -> str:
         from notes.tasks import note_save, call_task
         print(f'Save note with network {self.options.network}')
-        return call_task(
+        slug = call_task(
             task=note_save,
             queue=settings.CELERY_DEFAULT_QUEUE,
             initial_queue=settings.CELERY_DEFAULT_QUEUE,
             destination_queue=self.options.network.value,
             request=self.serialize()
         )
+        print(f'Retrieve slug {slug}')
+        return slug

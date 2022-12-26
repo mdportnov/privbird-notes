@@ -9,7 +9,10 @@
         name: rabbitmq
         state: started
         restart_policy: always
-        ports: "15672:15672"
+        ports: "5672:5672"
+        env:
+          RABBITMQ_DEFAULT_USER: root
+          RABBITMQ_DEFAULT_PASS: realpongo
 
     - name: Copy backend
       become: yes
@@ -23,4 +26,4 @@
     - name: Run docker-compose.yml
       become: yes
       docker_compose:
-        project_src: "/var/opt/backend/feedback/"
+        project_src: "/var/opt/feedback/"

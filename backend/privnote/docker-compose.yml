@@ -19,7 +19,7 @@ services:
 
   celery:
     build: ./
-    command: celery -A privnote worker -B -l DEBUG -Q \${CELERY_DEFAULT_QUEUE}
+    command: celery -A privnote worker -B -l INFO -Q \${CELERY_DEFAULT_QUEUE}
     env_file:
       - .env
     depends_on:
@@ -32,9 +32,10 @@ services:
       - internal
 
   nginx:
-    build: ./nginx/
+    image: nginx
     volumes:
       - ./nginx/log/:/var/log/nginx/
+      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
     depends_on:
       - privnote
     links:
@@ -70,7 +71,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./rabbitmq:/var/lib/rabbitmq
+      - ./rabbitmq:/var/lib/rabbitmq/mnesia
     ports:
       - "15672:15672"
     networks:

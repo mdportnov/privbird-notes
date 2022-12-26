@@ -7,7 +7,7 @@ services:
     env_file:
       - .env
     volumes:
-      - feedback_static:/app/static/
+      - static_data:/app/static/
     depends_on:
       - mariadb
       - redis
@@ -18,9 +18,9 @@ services:
   nginx:
     image: nginx
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d
-      - feedback_static:/feedback/static/
-      - /var/log/backend/nginx/:/var/log/nginx/
+      - ./nginx/log/:/var/log/nginx/
+      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
+      - static_data:/static/
     depends_on:
       - feedback
     links:
@@ -34,7 +34,7 @@ services:
     env_file:
       - .env
     volumes:
-      - mysql_data:/var/lib/mysql/data/
+      - mariadb_data:/var/lib/mysql/data/
 
   redis:
     image: redis
@@ -44,5 +44,5 @@ services:
       - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
 
 volumes:
-  mysql_data:
-  feedback_static:
+  static_data:
+  mariadb_data:
