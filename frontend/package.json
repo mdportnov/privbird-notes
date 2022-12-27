@@ -2,8 +2,8 @@
   "name": "privbird",
   "version": "0.0.0",
   "scripts": {
-    "serve::dev": "cross-env vite --mode dev",
-    "build::dev": "cross-env vite build --mode dev",
+    "serve::dev": "cross-env VITE_FEEDBACK_URL=${VITE_FEEDBACK_URL} vite --mode dev",
+    "build::dev": "cross-env VITE_FEEDBACK_URL=${VITE_FEEDBACK_URL} vite build --mode dev",
     "serve::prod": "cross-env vite --mode prod",
     "build::prod": "cross-env vite build --mode prod",
     "type-check": "vue-tsc --noEmit",

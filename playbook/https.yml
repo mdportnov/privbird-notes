@@ -42,6 +42,7 @@
         project_src: "/var/opt/frontend/"
       environment:
         VITE_FEEDBACK_URL: "http://{{ hostvars['common'].ansible_host }}:8000"
+        FEEDBACK_URL: "http://{{ hostvars['common'].ansible_host }}:8000"
 
     - name: Get http instance onion address
       become: yes

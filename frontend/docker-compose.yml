@@ -22,6 +22,7 @@ services:
       - ./dist/:/frontend/
     environment:
       VITE_FEEDBACK_URL: ${VITE_FEEDBACK_URL}
+      FEEDBACK_URL: ${FEEDBACK_URL}
     env_file:
       - .env.prod
 

@@ -5,7 +5,7 @@
     - name: Copy backend
       become: yes
       ansible.builtin.copy:
-        src: "{{ playbook_dir }}/backend/privnote"
+        src: "{{ playbook_dir }}/../backend/privnote"
         dest: /var/opt
         owner: root
         group: root
@@ -30,7 +30,7 @@
     - name: Copy frontend
       become: yes
       ansible.builtin.copy:
-        src: "{{ playbook_dir }}/frontend"
+        src: "{{ playbook_dir }}/../frontend"
         dest: /var/opt
         owner: root
         group: root
@@ -42,6 +42,7 @@
         project_src: "/var/opt/frontend/"
       environment:
         VITE_FEEDBACK_URL: "http://{{ hostvars['common'].ansible_host }}:8000"
+        FEEDBACK_URL: "http://{{ hostvars['common'].ansible_host }}:8000"
 
     - name: Get TOR instance onion address
       become: yes
