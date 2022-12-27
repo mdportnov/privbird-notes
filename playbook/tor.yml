@@ -19,7 +19,7 @@
           - subnet: 172.30.0.0/24
             gateway: 172.30.0.1
 
-    - name: Run docker-compose.yml
+    - name: Run backend docker-compose.yml
       become: yes
       docker_compose:
         project_src: "/var/opt/privnote/"
@@ -36,12 +36,11 @@
         group: root
         mode: '0644'
 
-    - name: Run TOR-fe docker-compose.yml
+    - name: Run frontend docker-compose.yml
       become: yes
       docker_compose:
         project_src: "/var/opt/frontend/"
       environment:
-        VITE_FEEDBACK_URL: "http://{{ hostvars['common'].ansible_host }}:8000"
         FEEDBACK_URL: "http://{{ hostvars['common'].ansible_host }}:8000"
 
     - name: Get TOR instance onion address

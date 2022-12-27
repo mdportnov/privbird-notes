@@ -1,5 +1,5 @@
 ---
-- name: Run shared services
+- name: Run common services
   hosts: common
   tasks:
     - name: Deploy rabbitmq docker container
