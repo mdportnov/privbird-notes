@@ -81,8 +81,7 @@ const copyToClipboard = async () => {
 
         .text {
           width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
+          overflow: auto;
         }
       }
     }
