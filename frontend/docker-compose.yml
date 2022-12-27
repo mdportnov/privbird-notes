@@ -9,6 +9,7 @@ services:
     environment:
       PB_TOR_SERVICE_HOSTS: '80:nginx:80'
 
+
   nginx:
     build:
       context: .
@@ -19,6 +20,8 @@ services:
     volumes:
       - ./nginx/log/:/var/log/nginx/
       - ./dist/:/frontend/
+    environment:
+      VITE_FEEDBACK_URL: ${VITE_FEEDBACK_URL}
     env_file:
       - .env.prod
 

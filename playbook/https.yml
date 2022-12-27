@@ -41,7 +41,7 @@
       docker_compose:
         project_src: "/var/opt/frontend/"
       environment:
-        FEEDBACK_URL: "http://{{ hostvars['common'].ansible_host }}:8000"
+        FEEDBACK_API_URL: "http://{{ hostvars['common'].ansible_host }}:8000"
 
     - name: Get http instance onion address
       become: yes
