@@ -21,7 +21,7 @@ services:
       - ./nginx/log/:/var/log/nginx/
       - ./dist/:/frontend/
     environment:
-      FEEDBACK_URL: ${FEEDBACK_URL:-http://172.30.0.10:8000}
+      FEEDBACK_URL: ${FEEDBACK_URL:-http://localhost:8000}
     env_file:
       - .env.prod
 
