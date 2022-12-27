@@ -2,8 +2,8 @@ import type { AxiosRequestConfig } from 'axios'
 import axios from 'axios'
 import { useLocaleInterceptor } from './interceptors'
 
-export const baseURLPrivnote = import.meta.env.VITE_PRIVNOTE_API_URL
-export const baseURLFeedback = import.meta.env.VITE_FEEDBACK_API_URL
+export const baseURLPrivnote = process.env.VITE_FEEDBACK_URL + process.env.VITE_PRIVNOTE_API_URL
+export const baseURLFeedback = process.env.VITE_PRIVNOTE_URL + process.env.VITE_FEEDBACK_API_URL
 
 export const axiosConfig = {
   timeout: 5000,
