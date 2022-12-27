@@ -1,3 +1,5 @@
+import asyncio
+from datetime import datetime
 from time import sleep
 from typing import Dict
 from uuid import uuid4
@@ -12,6 +14,7 @@ from django.utils.translation import gettext_lazy as _
 
 from notes.dto.NoteUpdateDto import NoteUpdateDto
 from notes.dto.request.NoteCreateRequest import NoteCreateRequest
+from notes.utils.Constants import Constants
 from privnote import settings
 from privnote.celery import app
 from privnote.dto.exceptions.ExternalServerException import ExternalServerException
@@ -56,14 +59,14 @@ def note_write(request: Dict, initial_queue: str, task_id: str):
     call_task(note_append_result, queue=initial_queue, task_id=task_id, slug=slug)
 
 
+@app.task
 def wait_for_response(task_id: str) -> str:
-    retries = 0
-    logger.info(f'Wait for {task_id}...')
+    logger.info(f'Wait for {task_id}')
+    start = datetime.now()
     while not conn.exists(task_id):
-        sleep(0.1)
-        retries += 1
-        if retries > 10:
+        if (datetime.now() - start).seconds > Constants.MAX_WAITING_PERIOD:
             raise ExternalServerException()
+        asyncio.sleep(0.1)
     return conn.getdel(task_id).decode('utf-8')
 
 
@@ -72,7 +75,7 @@ def note_save(request: Dict, initial_queue: str, destination_queue: str) -> str:
     task_id = str(uuid4())
     logger.info(f'Save note from {initial_queue} to {destination_queue}')
     call_task(note_write, queue=destination_queue, request=request, initial_queue=initial_queue, task_id=task_id)
-    return wait_for_response(task_id)
+    return call_task(wait_for_response, queue=initial_queue, task_id=task_id)
 
 
 @app.task

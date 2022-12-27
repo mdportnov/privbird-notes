@@ -93,6 +93,10 @@ msgstr "Это поле должно быть нулевым."
 msgid "External server does not respond."
 msgstr "Внешний сервер не отвечает."
 
+#: HostNotSetException.py:9
+msgid "Host for this network is not set"
+msgstr "Хост для этого типа сети не установлен"
+
 #: authentication.py:70
 msgid "Invalid basic header. No credentials provided."
 msgstr "Неверный basic заголовок. Учетные данные не предоставлены."

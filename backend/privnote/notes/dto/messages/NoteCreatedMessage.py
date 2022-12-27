@@ -11,11 +11,11 @@ from privnote.dto.messages.ApiMessage import ApiMessage
 class NoteCreatedMessage(ApiMessage):
     data: Dict
 
-    def __init__(self, slug: str):
+    def __init__(self, host: str, slug: str):
         self.message = 'The note has been successfully created.' \
                        'The note will be destroyed after reading it!' \
                        'Don’t forget to copy the link!'
-        self.data = {'slug': slug}
+        self.data = {'url': f'{host}/{slug}'}
         self.status = status.HTTP_201_CREATED
         super().__init__()
 
@@ -25,6 +25,6 @@ class NoteCreatedMessage(ApiMessage):
         schema.properties['data'] = Schema(
             title='Dict',
             type=TYPE_OBJECT,
-            properties={'slug': Schema(type=TYPE_STRING)}
+            properties={'url': Schema(type=TYPE_STRING)}
         )
         return schema

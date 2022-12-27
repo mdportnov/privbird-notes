@@ -1,11 +1,13 @@
+import redis
 from django.http import JsonResponse
 from drf_yasg.utils import swagger_auto_schema
+from notes.dto.exceptions.NoteNotFound import NoteNotFoundException
+from notes.dto.exceptions.PasswordRequired import PasswordRequiredException
 from rest_framework import status
 from rest_framework.request import Request
 from rest_framework.views import APIView
 
-from notes.dto.exceptions.NoteNotFound import NoteNotFoundException
-from notes.dto.exceptions.PasswordRequired import PasswordRequiredException
+from notes.dto.exceptions.HostNotSetException import HostNotSetException
 from notes.dto.messages.NoteCreatedMessage import NoteCreatedMessage
 from notes.dto.messages.NoteRetrievedMessage import NoteRetrievedMessage
 from notes.dto.request.NoteCreateRequest import NoteCreateRequest
@@ -13,7 +15,10 @@ from notes.dto.request.PasswordRequest import PasswordRequest
 from notes.dto.serializers.NoteRequestSerializer import NoteRequestSerializer
 from notes.dto.serializers.PasswordSerializer import PasswordSerializer
 from notes.models import Note
+from privnote import settings
 from privnote.utils.serializers import get_validated_data
+
+conn = redis.StrictRedis(host=settings.REDIS_HOST, db=3)
 
 
 def find_note_by_slug(slug: str):
@@ -71,7 +76,10 @@ class CreateNoteView(APIView):
 
         note_request: NoteCreateRequest = get_validated_data(NoteRequestSerializer, request.data)
         slug = note_request.save()
-        return NoteCreatedMessage(slug).as_json_response()
+        host = conn.get(note_request.options.network.value)
+        if host is None:
+            raise HostNotSetException()
+        return NoteCreatedMessage(host.decode('utf-8'), slug).as_json_response()
 
 
 class NoteKeyView(APIView):

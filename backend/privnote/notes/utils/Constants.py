@@ -6,3 +6,4 @@ class Constants:
     KEY_LENGTH: int = 12
     SALT_LENGTH: int = 32
     HASHER: str = 'pbkdf2_sha256'
+    MAX_WAITING_PERIOD: int = 2

@@ -88,6 +88,10 @@ msgstr ""
 msgid "External server does not respond."
 msgstr ""
 
+#: HostNotSetException.py:9
+msgid "Host for this network is not set"
+msgstr ""
+
 #: authentication.py:70
 msgid "Invalid basic header. No credentials provided."
 msgstr ""
