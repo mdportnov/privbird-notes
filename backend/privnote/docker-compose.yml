@@ -19,7 +19,7 @@ services:
 
   celery:
     build: ./
-    command: celery -A privnote worker -B -l INFO -Q \${CELERY_DEFAULT_QUEUE} --autoscale=10,3
+    command: celery -A privnote worker -B -l INFO -Q \${CELERY_DEFAULT_QUEUE} --concurrency=30
     env_file:
       - .env
     depends_on:
