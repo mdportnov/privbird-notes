@@ -15,7 +15,7 @@ class NoteCreatedMessage(ApiMessage):
         self.message = 'The note has been successfully created.' \
                        'The note will be destroyed after reading it!' \
                        'Don’t forget to copy the link!'
-        self.data = {'url': f'{host}/{slug}'}
+        self.data = {'url': f'{host}/notes/{slug}'}
         self.status = status.HTTP_201_CREATED
         super().__init__()
 

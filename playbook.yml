@@ -50,7 +50,7 @@
           - docker-compose
           - requests
 
-- name: Run shared services
+- name: Run common services
   hosts: common
   tasks:
     - name: Deploy rabbitmq docker container
@@ -60,30 +60,32 @@
         name: rabbitmq
         state: started
         restart_policy: always
-        #        env_file: "{{ playbook_dir }}/backend/privnote/.env"
-        ports: "15672:15672"
+        ports: "5672:5672"
+        env:
+          RABBITMQ_DEFAULT_USER: root
+          RABBITMQ_DEFAULT_PASS: realpongo
 
     - name: Copy backend
       become: yes
       ansible.builtin.copy:
-        src: "{{ playbook_dir }}/backend"
+        src: "{{ playbook_dir }}/backend/feedback"
         dest: /var/opt
         owner: root
         group: root
         mode: '0644'
 
-    - name: Run feedback docker-compose.yml
+    - name: Run docker-compose.yml
       become: yes
       docker_compose:
-        project_src: "/var/opt/backend/feedback/"
+        project_src: "/var/opt/feedback/"
 
-- name: Run HTTPS instance
+- name: Run privnote HTTPS instance
   hosts: http
   tasks:
     - name: Copy backend
       become: yes
       ansible.builtin.copy:
-        src: "{{ playbook_dir }}/backend"
+        src: "{{ playbook_dir }}/backend/privnote"
         dest: /var/opt
         owner: root
         group: root
@@ -97,13 +99,13 @@
           - gateway: 172.30.0.1
             subnet: 172.30.0.0/24
 
-    - name: Run HTTPS docker-compose.yml
+    - name: Run backend docker-compose.yml
       become: yes
       docker_compose:
-        project_src: "/var/opt/backend/privnote/"
+        project_src: "/var/opt/privnote/"
       environment:
         CELERY_DEFAULT_QUEUE: HTTPS
-        RABBITMQ_HOST: "{{ hostvars['common']['ansible_default_ipv4']['address'] }}"
+        RABBITMQ_HOST: "{{ hostvars['common'].ansible_host }}"
 
     - name: Copy frontend
       become: yes
@@ -114,19 +116,16 @@
         group: root
         mode: '0644'
 
-    - name: Show feedback url
-      command: echo "http://{{ hostvars['common'].ansible_host }}:8000"
-
-    - name: Run HTTPS-fe docker-compose.yml
+    - name: Run frontend docker-compose.yml
       become: yes
       docker_compose:
         project_src: "/var/opt/frontend/"
       environment:
         FEEDBACK_URL: "http://{{ hostvars['common'].ansible_host }}:8000"
 
-    - name: Get http instance onion address
+    - name: Get HTTP instance onion address
       become: yes
-      command: sudo docker exec -ti tor  onions --json
+      command: sudo docker exec -it tor onions --json
       register: http_onion_addr
 
 - name: Run TOR instance
@@ -135,7 +134,7 @@
     - name: Copy backend
       become: yes
       ansible.builtin.copy:
-        src: "{{ playbook_dir }}/backend"
+        src: "{{ playbook_dir }}/backend/privnote"
         dest: /var/opt
         owner: root
         group: root
@@ -149,13 +148,13 @@
           - subnet: 172.30.0.0/24
             gateway: 172.30.0.1
 
-    - name: Run HTTPS docker-compose.yml
+    - name: Run backend docker-compose.yml
       become: yes
       docker_compose:
-        project_src: "/var/opt/backend/privnote/"
+        project_src: "/var/opt/privnote/"
       environment:
         CELERY_DEFAULT_QUEUE: TOR
-        RABBITMQ_HOST: "{{ hostvars['common']['ansible_default_ipv4']['address'] }}"
+        RABBITMQ_HOST: "{{ hostvars['common'].ansible_host }}"
 
     - name: Copy frontend
       become: yes
@@ -166,10 +165,7 @@
         group: root
         mode: '0644'
 
-    # - name: Show feedback url
-    #   command: echo "http://{{ hostvars['common'].ansible_host }}:8000"
-
-    - name: Run TOR-fe docker-compose.yml
+    - name: Run frontend docker-compose.yml
       become: yes
       docker_compose:
         project_src: "/var/opt/frontend/"
@@ -178,7 +174,7 @@
 
     - name: Get TOR instance onion address
       become: yes
-      command: sudo docker exec -ti tor  onions --json
+      command: sudo docker exec -it tor onions --json
       register: tor_onion_addr
 
 - name: Run I2P instance
