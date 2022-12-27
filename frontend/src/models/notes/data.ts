@@ -43,7 +43,7 @@ export namespace INoteData {
       },
       options: {
         network: form.options?.network || 'HTTPS',
-        expires: form.options?.expires || 'Expires.YEAR',
+        expires: form.options?.expires || 'YEAR',
         email: form.options?.email || null,
       },
     }

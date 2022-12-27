@@ -41,7 +41,7 @@ const { values, handleSubmit } = useForm<INoteForm>({
     },
     options: {
       network: 'HTTPS',
-      expires: 'Expires.YEAR',
+      expires: 'YEAR',
       email: '',
     },
   },
@@ -157,7 +157,7 @@ const onSubmit = handleSubmit(async (form) => {
           </div>
         </transition>
       </div>
-      <a-btn gradient type="submit" :loading="store.slug.state.isLoading()" class="submit-btn">
+      <a-btn gradient type="submit" :loading="store.url.state.isLoading()" class="submit-btn">
         {{ $t('noteCreate.createNote') }}
       </a-btn>
     </div>

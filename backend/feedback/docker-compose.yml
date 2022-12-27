@@ -1,0 +1,48 @@
+version: "3.5"
+
+services:
+  feedback:
+    build: ./
+    command: gunicorn -c gunicorn.conf.py feedback.wsgi
+    env_file:
+      - .env
+    volumes:
+      - static_data:/app/static/
+    depends_on:
+      - mariadb
+      - redis
+    links:
+      - redis:redis
+      - mariadb:mariadb
+
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx/log/:/var/log/nginx/
+      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
+      - static_data:/static/
+    depends_on:
+      - feedback
+    links:
+      - feedback:feedback
+    ports:
+      - "8000:8000"
+
+  mariadb:
+    image: mariadb
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - mariadb_data:/var/lib/mysql/data/
+
+  redis:
+    image: redis
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis/data/:/data/
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+
+volumes:
+  static_data:
+  mariadb_data:

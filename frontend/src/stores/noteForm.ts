@@ -7,17 +7,17 @@ import { defineStore } from 'pinia'
 
 export const useNoteFormStore = defineStore('noteForm', {
   state: () => ({
-    slug: useSingleState<IRes<INote.Slug>>(),
+    url: useSingleState<IRes<INote.Url>>(),
   }),
   actions: {
     async create(data: INoteData) {
-      this.slug.state.loading()
+      this.url.state.loading()
       const res = await NotesService.create(data)
       if (res.error) {
-        this.slug.state.error()
+        this.url.state.error()
       } else {
-        this.slug.data = res.data
-        this.slug.state.success()
+        this.url.data = res.data
+        this.url.state.success()
       }
       return res
     },

@@ -1,0 +1,31 @@
+version: "3.5"
+
+services:
+  tor:
+    image: goldy/tor-hidden-service:latest
+    container_name: tor
+    links:
+      - nginx
+    environment:
+      PB_TOR_SERVICE_HOSTS: '80:nginx:80'
+
+
+  nginx:
+    build:
+      context: .
+      args:
+        mode: dev
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/log/:/var/log/nginx/
+      - ./dist/:/frontend/
+    environment:
+      FEEDBACK_URL: ${FEEDBACK_URL}
+    env_file:
+      - .env.prod
+
+networks:
+  default:
+    name: privbird
+    external: true

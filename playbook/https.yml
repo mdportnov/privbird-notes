@@ -1,0 +1,50 @@
+---
+- name: Run privnote HTTPS instance
+  hosts: http
+  tasks:
+    - name: Copy backend
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../backend/privnote"
+        dest: /var/opt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create docker network
+      become: yes
+      docker_network:
+        name: privbird
+        ipam_config:
+          - gateway: 172.30.0.1
+            subnet: 172.30.0.0/24
+
+    - name: Run docker-compose.yml
+      become: yes
+      docker_compose:
+        project_src: "/var/opt/privnote/"
+      environment:
+        CELERY_DEFAULT_QUEUE: HTTPS
+        RABBITMQ_HOST: "{{ hostvars['common'].ansible_host }}"
+
+    - name: Copy frontend
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../frontend"
+        dest: /var/opt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Run HTTPS-fe docker-compose.yml
+      become: yes
+      docker_compose:
+        project_src: "/var/opt/frontend/"
+      environment:
+        VITE_FEEDBACK_URL: "http://{{ hostvars['common'].ansible_host }}:8000"
+        FEEDBACK_URL: "http://{{ hostvars['common'].ansible_host }}:8000"
+
+    - name: Get http instance onion address
+      become: yes
+      command: sudo docker exec -it tor onions --json
+      register: http_onion_addr

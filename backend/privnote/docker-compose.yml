@@ -1,0 +1,88 @@
+version: "3.5"
+
+services:
+  privnote:
+    build: ./
+    command: gunicorn -c gunicorn.conf.py privnote.wsgi
+    env_file:
+      - .env
+    volumes:
+      - ./:/app/
+    depends_on:
+      - mariadb
+      - redis
+    links:
+      - redis:redis
+      - mariadb:mariadb
+    networks:
+      - internal
+
+  celery:
+    build: ./
+    command: celery -A privnote worker -B -l INFO -Q \${CELERY_DEFAULT_QUEUE} --concurrency=30
+    env_file:
+      - .env
+    depends_on:
+      - privnote
+      - rabbitmq
+    links:
+      - redis:redis
+      - mariadb:mariadb
+    networks:
+      - internal
+
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx/log/:/var/log/nginx/
+      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
+    depends_on:
+      - privnote
+    links:
+      - privnote:privnote
+    networks:
+      privbird:
+        ipv4_address: 172.30.0.11
+      internal:
+
+  mariadb:
+    image: mariadb
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - mysql_data:/var/lib/mysql/data/
+    networks:
+      - internal
+
+  redis:
+    container_name: privnote-redis
+    image: redis
+    restart: always
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis/data/:/data/
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - internal
+
+  rabbitmq:
+    image: rabbitmq
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./rabbitmq:/var/lib/rabbitmq/mnesia
+    ports:
+      - "15672:15672"
+    networks:
+      - internal
+
+volumes:
+  mysql_data:
+
+networks:
+  internal:
+  privbird:
+    name: privbird
+    driver: bridge

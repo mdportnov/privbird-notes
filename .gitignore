@@ -42,6 +42,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+poetry.lock
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -105,6 +106,16 @@ ipython_config.py
 #   having no cross-platform support, pipenv may install dependencies that don't work, or not
 #   install all needed dependencies.
 #Pipfile.lock
+
+### Redis ###
+# Ignore redis binary dump (dump.rdb) files
+
+*.rdb
+*.aof
+
+### RabbitMQ ###
+
+rabbitmq/
 
 # poetry
 #   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.

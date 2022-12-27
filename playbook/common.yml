@@ -1,0 +1,29 @@
+---
+- name: Run shared services
+  hosts: common
+  tasks:
+    - name: Deploy rabbitmq docker container
+      become: yes
+      docker_container:
+        image: rabbitmq
+        name: rabbitmq
+        state: started
+        restart_policy: always
+        ports: "5672:5672"
+        env:
+          RABBITMQ_DEFAULT_USER: root
+          RABBITMQ_DEFAULT_PASS: realpongo
+
+    - name: Copy backend
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../backend/feedback"
+        dest: /var/opt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Run docker-compose.yml
+      become: yes
+      docker_compose:
+        project_src: "/var/opt/feedback/"

@@ -1,0 +1,333 @@
+---
+- name: Prepare environments
+  hosts: all
+  tasks:
+    - name: Install aptitude
+      become: yes
+      apt:
+        name: aptitude
+        state: latest
+        update_cache: true
+
+    - name: Install required system packages
+      become: yes
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: latest
+        update_cache: true
+
+    - name: Add Docker GPG apt Key
+      become: yes
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      become: yes
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      become: yes
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+
+    - name: Install modules for Python
+      become: yes
+      pip:
+        name:
+          - docker
+          - docker-compose
+          - requests
+
+- name: Run shared services
+  hosts: common
+  tasks:
+    - name: Deploy rabbitmq docker container
+      become: yes
+      docker_container:
+        image: rabbitmq
+        name: rabbitmq
+        state: started
+        restart_policy: always
+        #        env_file: "{{ playbook_dir }}/backend/privnote/.env"
+        ports: "15672:15672"
+
+    - name: Copy backend
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/backend"
+        dest: /var/opt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Run feedback docker-compose.yml
+      become: yes
+      docker_compose:
+        project_src: "/var/opt/backend/feedback/"
+
+- name: Run HTTPS instance
+  hosts: http
+  tasks:
+    - name: Copy backend
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/backend"
+        dest: /var/opt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create docker network
+      become: yes
+      docker_network:
+        name: privbird
+        ipam_config:
+          - gateway: 172.30.0.1
+            subnet: 172.30.0.0/24
+
+    - name: Run HTTPS docker-compose.yml
+      become: yes
+      docker_compose:
+        project_src: "/var/opt/backend/privnote/"
+      environment:
+        CELERY_DEFAULT_QUEUE: HTTPS
+        RABBITMQ_HOST: "{{ hostvars['common']['ansible_default_ipv4']['address'] }}"
+
+    - name: Copy frontend
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/frontend"
+        dest: /var/opt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Show feedback url
+      command: echo "http://{{ hostvars['common'].ansible_host }}:8000"
+
+    - name: Run HTTPS-fe docker-compose.yml
+      become: yes
+      docker_compose:
+        project_src: "/var/opt/frontend/"
+      environment:
+        FEEDBACK_URL: "http://{{ hostvars['common'].ansible_host }}:8000"
+
+    - name: Get http instance onion address
+      become: yes
+      command: sudo docker exec -ti tor  onions --json
+      register: http_onion_addr
+
+- name: Run TOR instance
+  hosts: tor
+  tasks:
+    - name: Copy backend
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/backend"
+        dest: /var/opt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create docker network
+      become: yes
+      docker_network:
+        name: privbird
+        ipam_config:
+          - subnet: 172.30.0.0/24
+            gateway: 172.30.0.1
+
+    - name: Run HTTPS docker-compose.yml
+      become: yes
+      docker_compose:
+        project_src: "/var/opt/backend/privnote/"
+      environment:
+        CELERY_DEFAULT_QUEUE: TOR
+        RABBITMQ_HOST: "{{ hostvars['common']['ansible_default_ipv4']['address'] }}"
+
+    - name: Copy frontend
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/frontend"
+        dest: /var/opt
+        owner: root
+        group: root
+        mode: '0644'
+
+    # - name: Show feedback url
+    #   command: echo "http://{{ hostvars['common'].ansible_host }}:8000"
+
+    - name: Run TOR-fe docker-compose.yml
+      become: yes
+      docker_compose:
+        project_src: "/var/opt/frontend/"
+      environment:
+        FEEDBACK_URL: "http://{{ hostvars['common'].ansible_host }}:8000"
+
+    - name: Get TOR instance onion address
+      become: yes
+      command: sudo docker exec -ti tor  onions --json
+      register: tor_onion_addr
+
+- name: Run I2P instance
+  hosts: i2p
+  tasks:
+    - name: Copy backend
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/backend"
+        dest: /var/opt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create docker network
+      become: yes
+      docker_network:
+        name: privbird
+        ipam_config:
+          - subnet: 172.30.0.0/24
+            gateway: 172.30.0.1
+
+    - name: Run HTTPS docker-compose.yml
+      become: yes
+      docker_compose:
+        project_src: "/var/opt/backend/privnote/"
+      environment:
+        CELERY_DEFAULT_QUEUE: I2P
+        RABBITMQ_HOST: "{{ hostvars['common']['ansible_default_ipv4']['address'] }}"
+
+    - name: Copy frontend
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/frontend"
+        dest: /var/opt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Run I2P-fe docker-compose.yml
+      become: yes
+      docker_compose:
+        project_src: "/var/opt/frontend/"
+      environment:
+        FEEDBACK_URL: "http://{{ hostvars['common'].ansible_host }}:8000"
+
+    - name: Get I2P instance onion address
+      become: yes
+      command: sudo docker exec -ti tor  onions --json
+      register: i2p_onion_addr
+
+- name: Run TOR entry point instance
+  hosts: ep_tor
+  tasks:
+    - name: set docker-compose
+      become: yes
+      template:
+        src: ./entrypoint/template/docker-compose.yml.j2
+        dest: /var/opt/docker-compose.yml
+      vars:
+        toraddr: "{{(hostvars['tor']['tor_onion_addr'].stdout | from_json).pb[0]}}"
+        cur_env: "TOR"
+
+    - name: Copy connector
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/entrypoint/torconnector"
+        dest: /var/opt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Run docker-compose.yml
+      become: yes
+      docker_compose:
+        project_src: "/var/opt/"
+
+    - name: Get TOR entry point onion address
+      become: yes
+      command: sudo docker exec -ti torext  onions --json
+      register: tor_onion_addr
+
+    - name: Print TOR entry point onion address
+      debug:
+        msg: "TOR ENTRY POINT {{(hostvars['ep_tor']['tor_onion_addr'].stdout | from_json).pb[0]}}"
+
+- name: Run HTTP entry point instance
+  hosts: ep_http
+  tasks:
+    - name: set docker-compose
+      become: yes
+      template:
+        src: "{{ playbook_dir }}/entrypoint/template/docker-compose.yml.j2"
+        dest: /var/opt/docker-compose.yml
+      vars:
+        toraddr: "{{(hostvars['http']['http_onion_addr'].stdout | from_json).pb[0]}}"
+        cur_env: "HTTP"
+
+    - name: Copy connector
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/entrypoint/torconnector"
+        dest: /var/opt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Run docker-compose.yml
+      become: yes
+      docker_compose:
+        project_src: "/var/opt/"
+
+- name: Run I2P entry point instance
+  hosts: ep_i2p
+  tasks:
+    - name: Add i2p repository from PPA and install its signing key on Ubuntu target
+      become: yes
+      ansible.builtin.apt_repository:
+        repo: ppa:i2p-maintainers/i2p
+
+    - name: Update apt and install i2p
+      become: yes
+      apt:
+        name: i2p
+        state: latest
+        update_cache: true
+
+    - name: Start i2p Router
+      ansible.builtin.shell: i2prouter start
+
+    - name: set docker-compose
+      become: yes
+      template:
+        src: ./entrypoint/template/docker-compose.yml.j2
+        dest: /var/opt/docker-compose.yml
+      vars:
+        toraddr: "{{(hostvars['i2p']['i2p_onion_addr'].stdout | from_json).pb[0]}}"
+        cur_env: "I2P"
+
+    - name: Copy connector
+      become: yes
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/entrypoint/torconnector"
+        dest: /var/opt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Run docker-compose.yml
+      become: yes
+      docker_compose:
+        project_src: "/var/opt/"

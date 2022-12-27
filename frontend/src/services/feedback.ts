@@ -1,4 +1,4 @@
-import { $api } from '@/http'
+import { $apiFeedback } from '@/http'
 import type { IFeedbackData } from '@/models/feedback/data'
 import type { IRes } from '@/models/resource/default'
 import { IResourceError } from '@/models/resource/error'
@@ -8,7 +8,7 @@ import axios from 'axios'
 export const FeedbackService = {
   async send(data: IFeedbackData): Promise<IResource<IRes<null>>> {
     try {
-      const res = await $api.post<IRes<null>>('/feedbacks/', data)
+      const res = await $apiFeedback.post<IRes<null>>('/feedbacks/', data)
       return { data: res.data }
     } catch (e) {
       if (axios.isAxiosError(e)) {

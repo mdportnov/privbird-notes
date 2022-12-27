@@ -9,17 +9,17 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const store = useNoteFormStore()
-onBeforeMount(() => !store.slug.data && router.replace('/'))
+onBeforeMount(() => !store.url.data && router.replace('/'))
 
-const slug = computed(() => store.slug.data)
-const url = computed(() => `${window.location.origin}/notes/${slug.value?.data.slug}`)
-const message = computed(() => slug.value?.message)
+const url = computed(() => store.url.data)
+const message = computed(() => url.value?.message)
 
 const showClipboardMesage = ref(false)
 const showClipboardErrorMesage = ref(false)
 const copyToClipboard = async () => {
   try {
-    await navigator.clipboard.writeText(url.value)
+    if (!url.value?.data.url) return
+    await navigator.clipboard.writeText(url.value?.data.url)
     showClipboardMesage.value = true
   } catch (_) {
     showClipboardErrorMesage.value = true
@@ -33,7 +33,7 @@ const copyToClipboard = async () => {
     <main class="content">
       <div class="actions">
         <div class="url">
-          <span class="text">{{ url }}</span>
+          <span class="text">{{ url?.data.url }}</span>
         </div>
         <a-btn @click="copyToClipboard" square gradient><i-clipboard /></a-btn>
         <a-message-modal v-model:show="showClipboardMesage" type="positive" :timeout="3000">

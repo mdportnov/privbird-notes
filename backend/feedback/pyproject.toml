@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "Feedback"
+version = "1.0.0"
+description = "Service for sharing feedbacks"
+authors = ["Ivan Krasnopolsky <i1.krasnopolskiy@gmail.com>"]
+repository = "https://github.com/mdportnov/privbird-notes"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+# Core
+python = "~3.10.0"
+django = "4.1.3"
+djangorestframework = "3.14.0"
+django-cors-headers = "3.13.0"
+
+# Cache
+redis = "4.3.5"
+
+# Utils
+python-dotenv = "0.21.0"
+
+# DBMS
+mysqlclient = "2.1.1"
+
+# Localization
+django_rosetta = "0.9.8"
+
+# Documentation
+drf_yasg = "1.21.4"
+
+# Server
+gunicorn = "20.1.0"
