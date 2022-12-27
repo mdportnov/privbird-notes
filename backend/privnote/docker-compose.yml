@@ -56,6 +56,7 @@ services:
       - internal
 
   redis:
+    container_name: privnote-redis
     image: redis
     restart: always
     command: redis-server /usr/local/etc/redis/redis.conf

@@ -5,7 +5,7 @@
     - name: Copy backend
       become: yes
       ansible.builtin.copy:
-        src: "{{ playbook_dir }}/backend/privnote"
+        src: "{{ playbook_dir }}/../backend/privnote"
         dest: /var/opt
         owner: root
         group: root
@@ -30,7 +30,7 @@
     - name: Copy frontend
       become: yes
       ansible.builtin.copy:
-        src: "{{ playbook_dir }}/frontend"
+        src: "{{ playbook_dir }}/../frontend"
         dest: /var/opt
         owner: root
         group: root
