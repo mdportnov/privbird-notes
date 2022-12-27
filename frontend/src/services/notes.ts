@@ -7,9 +7,9 @@ import type { IResource } from '@/models/resource/resource'
 import axios from 'axios'
 
 export const NotesService = {
-  async create(data: INoteData): Promise<IResource<IRes<INote.Slug>>> {
+  async create(data: INoteData): Promise<IResource<IRes<INote.Url>>> {
     try {
-      const res = await $apiPrivnote.post<IRes<INote.Slug>>('/notes/', data)
+      const res = await $apiPrivnote.post<IRes<INote.Url>>('/notes/', data)
       return { data: res.data }
     } catch (e) {
       if (axios.isAxiosError(e)) {
